@@ -33,9 +33,9 @@ class GraQLBeanScanner(
                         .forEach { method: Method ->
                             method.getAnnotationsByType( key.java ).forEach { annotation ->
                                 listOf( key, annotation )
-                                byInterface.put(
-                                    configurator.createDelegate(beanDefinition, method, annotation)!!
-                                )
+                                configurator.createDelegate(beanDefinition, method, annotation).forEach{
+                                    byInterface.put( it )
+                                }
                             }
                         }
                 }
