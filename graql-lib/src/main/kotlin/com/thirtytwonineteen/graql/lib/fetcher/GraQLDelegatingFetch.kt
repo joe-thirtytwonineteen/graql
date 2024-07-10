@@ -4,12 +4,18 @@ import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import java.lang.reflect.Method
 
-class GraQLDelegatingFetch(
-    val type: String,
-    val field:String,
+interface GraQLDelegatingFetch<T>:DataFetcher<T> {
+    val type:String
+    val field:String
+    override fun get(env: DataFetchingEnvironment): T?
+}
+
+class DefaultGraQLDelegatingFetch(
+    override val type: String,
+    override val field:String,
     val method: Method,
     val target: Any,
-): DataFetcher<Any> {
+): GraQLDelegatingFetch<Any> {
     override fun get(env: DataFetchingEnvironment): Any? {
         val res = method.invoke( target, env.getSource() )
         return res

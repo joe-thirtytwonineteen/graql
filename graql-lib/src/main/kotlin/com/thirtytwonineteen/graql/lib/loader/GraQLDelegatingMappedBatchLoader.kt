@@ -6,13 +6,15 @@ import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ExecutorService
 
-class GraQLDelegatingMappedBatchLoader(
-    val dataLoaderName:String,
+interface GraQLDelegatingMappedBatchLoader<K, V>:MappedBatchLoader<K, V> {
+    val dataLoaderName:String
+}
+class DefaultGraQLDelegatingMappedBatchLoader(
+    override val dataLoaderName:String,
     val method: Method,
     val target: Any,
     val executor:ExecutorService
-): MappedBatchLoader<Any, Any> {
-
+): GraQLDelegatingMappedBatchLoader<Any, Any> {
     override fun load(keys: MutableSet<Any>): CompletionStage<Map<Any, Any>> =
         CompletableFuture.supplyAsync( {
             val res:Any = method.invoke( target, keys )

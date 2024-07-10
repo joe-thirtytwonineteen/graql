@@ -19,22 +19,22 @@ class GraQLBeanScanner(
         beanContext.getBeanDefinitions(Qualifiers.byStereotype(GraQLComponent::class.java))
     }
 
-    fun <T> delegatesForType( clazz: KClass<*> ):List<T>{
-        return delegatesByType.forType( clazz )
+    fun <T> delegatesForAnnotation(clazz: KClass<out Annotation> ):List<T>{
+        return delegatesByType.find( clazz )
     }
 
-    private val delegatesByType: DelegatesByType by lazy {
-        val byType = DelegatesByType()
+    private val delegatesByType: DelegatesByAnnotation by lazy {
+        val byType = DelegatesByAnnotation()
 
         componentDefinitions
             .forEach{ beanDefinition ->
                 delegationFactory.delegateConfigurators.forEach{ key, configurator ->
                     beanDefinition.beanType.methods
                         .forEach { method: Method ->
-                            method.getAnnotationsByType( key ).forEach { annotation ->
+                            method.getAnnotationsByType( key.java ).forEach { annotation ->
                                 listOf( key, annotation )
                                 val d = configurator.createDelegate(beanDefinition, method, annotation)!!
-                                byType.putByType( d::class, d )
+                                byType.put( key, d )
                             }
                         }
                 }
@@ -43,18 +43,18 @@ class GraQLBeanScanner(
         byType
     }
 
-    private class DelegatesByType{
-        val byType = mutableMapOf<KClass<*>, MutableList<Any>>()
-        fun putByType(clazz: KClass<*>, delegate: Any ) {
+    private class DelegatesByAnnotation{
+        val byAnnotation = mutableMapOf<Any, MutableList<Any>>()
+        fun put(annotation:KClass<out Annotation>, delegate: Any ) {
             when {
-                !byType.containsKey( clazz ) -> byType.put( clazz, mutableListOf( delegate ) )
-                else -> byType.get( clazz )!!.add( delegate )
+                !byAnnotation.containsKey( annotation ) -> byAnnotation.put( annotation, mutableListOf( delegate ) )
+                else -> byAnnotation.get( annotation )!!.add( delegate )
             }
         }
-        fun <T> forType( clazz: KClass<*> ):List<T>{
-            val isItThere = byType.containsKey(clazz)
+        fun <T> find(annotation:KClass<out Annotation> ):List<T>{
+            val isItThere = byAnnotation.containsKey(annotation)
             return when {
-                isItThere -> byType.get( clazz ) as List<T>
+                isItThere -> byAnnotation.get( annotation ) as List<T>
                 else -> emptyList()
             }
         }

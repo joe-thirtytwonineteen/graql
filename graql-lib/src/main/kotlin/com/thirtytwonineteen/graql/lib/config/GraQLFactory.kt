@@ -10,6 +10,7 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.ResourceResolver
+import jakarta.inject.Named
 import jakarta.inject.Singleton
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -23,7 +24,6 @@ class GraQLFactory {
     }
 
     @Singleton
-    @Requirements(Requires(bean = GraQLConfigurationProperties::class, beanProperty = "autowire", value = "true"))
     fun graphQL(
         resourceResolver: ResourceResolver,
         graQLConfigurationProperties: GraQLConfigurationProperties,

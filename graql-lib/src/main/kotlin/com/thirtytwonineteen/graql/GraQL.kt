@@ -10,20 +10,20 @@ class GraQL(
     private val graQLBeanScanner: GraQLBeanScanner
 ) {
 
-    val queries:List<GraQLDelegatingQuery> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingQuery::class)
+    val queries:List<GraQLDelegatingQuery<Any>> get() {
+        return graQLBeanScanner.delegatesForAnnotation(GraQLQuery::class)
     }
 
-    val mutations:List<GraQLDelegatingMutation> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingMutation::class)
+    val mutations:List<GraQLDelegatingMutation<Any>> get() {
+        return graQLBeanScanner.delegatesForAnnotation(GraQLMutation::class)
     }
 
-    val fetches:List<GraQLDelegatingFetch> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingFetch::class)
+    val fetches:List<GraQLDelegatingFetch<Any>> get() {
+        return graQLBeanScanner.delegatesForAnnotation(GraQLFetch::class)
     }
 
-    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingMappedBatchLoader::class)
+    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader<Any,Any>> get() {
+        return graQLBeanScanner.delegatesForAnnotation(GraQLMappedDataLoader::class)
     }
 
 }
