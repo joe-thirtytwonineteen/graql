@@ -1,0 +1,45 @@
+type Query {
+    toDos: [ToDo!]! # <1>
+}
+type Mutation {
+    createToDo(input: CreateToDoRequest!): CreateToDoResponse  # <2>
+    completeToDo(input: CompleteToDoRequest!): CompleteToDoResponse!  # <3>
+}
+input CreateToDoRequest {
+    toDo: ToDoDTO
+}
+input ToDoDTO {
+    title: String!
+    author: String!
+}
+type CreateToDoResponse {
+    id: ID!
+    authorId: ID!
+}
+
+input CompleteToDoRequest {
+    id: ID!
+}
+type CompleteToDoResponse {
+    id: ID!
+    completed: Boolean!
+}
+
+
+"""
+@key(fields: "id")
+"""
+type ToDo { # <4>
+    id: ID!
+    title: String!
+    completed: Boolean!
+    author: Author!
+}
+
+type Author { # <5>
+    id: ID!
+    username: String!
+}
+
+
+
