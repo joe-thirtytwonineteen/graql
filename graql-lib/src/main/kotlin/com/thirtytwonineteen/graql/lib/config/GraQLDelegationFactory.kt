@@ -21,7 +21,7 @@ open interface GraQLDelegationFactory {
 }
 
 interface GraQLDelegationConfigurator<ANNOTATION, DELEGATE>{
-    fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, annotation: Annotation):DELEGATE
+    fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, annotation: Annotation):List<DELEGATE>
 }
 
 @Singleton @Named("graQLDelegationFactory")
@@ -47,9 +47,11 @@ class DefaultGraQLFetchConfigurator(
 ) : GraQLDelegationConfigurator<GraQLFetch, GraQLDelegatingFetch<Any>> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): GraQLDelegatingFetch<Any> {
         val annotation = a as GraQLFetch
+        /*
         if (method.parameters.size != 1) {
             throw GraQLDelegationException("Cannot create GraQLFetch delegate for ${method.declaringClass.simpleName}::${method.name}: it does not require exactly one parameter.")
         }
+         */
         val requestParameter = method.parameters.first()
 
         return DefaultGraQLDelegatingFetch(
@@ -57,7 +59,10 @@ class DefaultGraQLFetchConfigurator(
                 annotation.type.isBlank() -> requestParameter.type.simpleName
                 else -> annotation.type
             },
-            field = annotation.field,
+            field = when {
+                annotation.field.isBlank() -> method.name
+                else -> annotation.field
+            },
             method = method,
             target = beanContext.getBean(beanDefinition),
         )

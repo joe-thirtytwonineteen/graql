@@ -34,7 +34,7 @@ class ToDoService(
         // None
 
         // Operation
-        return toDoRepository.findAll()
+        return toDoRepository.findAllOrderByIdAsc()
     }
 
     fun findToDoById(id: Long) : ToDo {

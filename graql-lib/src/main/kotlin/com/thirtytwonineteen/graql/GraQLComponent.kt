@@ -3,6 +3,8 @@ package com.thirtytwonineteen.graql
 import jakarta.inject.Qualifier
 import jakarta.inject.Singleton
 
+interface GraQLDelegate
+
 @Qualifier
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
@@ -13,7 +15,7 @@ annotation class GraQLComponent()
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.RUNTIME)
 @Singleton
-annotation class GraQLFetch(val field:String, val type:String = "")
+annotation class GraQLFetch(val field:String = "", val type:String = "")
 
 @Qualifier
 @Target(AnnotationTarget.FUNCTION)

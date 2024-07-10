@@ -1,11 +1,12 @@
 package com.thirtytwonineteen.graql.lib.fetcher
 
 import com.google.gson.Gson
+import com.thirtytwonineteen.graql.GraQLDelegate
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import java.lang.reflect.Method
 
-interface GraQLDelegatingQuery<T>:DataFetcher<T> {
+interface GraQLDelegatingQuery<T>:DataFetcher<T>, GraQLDelegate {
     val name:String
     val argumentName: String
     val requestType: Class<*>

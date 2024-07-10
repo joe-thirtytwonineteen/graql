@@ -28,4 +28,5 @@ class ToDo(var title: String, val authorId: Long) {
     var id: Long? = null
 
     var completed = false
+
 }

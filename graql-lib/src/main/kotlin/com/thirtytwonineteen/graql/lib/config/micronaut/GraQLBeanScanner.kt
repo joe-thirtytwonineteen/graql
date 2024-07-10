@@ -19,12 +19,12 @@ class GraQLBeanScanner(
         beanContext.getBeanDefinitions(Qualifiers.byStereotype(GraQLComponent::class.java))
     }
 
-    fun <T> delegatesForAnnotation(clazz: KClass<out Annotation> ):List<T>{
+    fun <T> delegatesForAnnotation(clazz: Class<*> ):List<T>{
         return delegatesByType.find( clazz )
     }
 
-    private val delegatesByType: DelegatesByAnnotation by lazy {
-        val byType = DelegatesByAnnotation()
+    private val delegatesByType: DelegatesByInterface by lazy {
+        val byInterface = DelegatesByInterface()
 
         componentDefinitions
             .forEach{ beanDefinition ->
@@ -33,28 +33,39 @@ class GraQLBeanScanner(
                         .forEach { method: Method ->
                             method.getAnnotationsByType( key.java ).forEach { annotation ->
                                 listOf( key, annotation )
-                                val d = configurator.createDelegate(beanDefinition, method, annotation)!!
-                                byType.put( key, d )
+                                byInterface.put(
+                                    configurator.createDelegate(beanDefinition, method, annotation)!!
+                                )
                             }
                         }
                 }
             }
 
-        byType
+        byInterface
     }
 
-    private class DelegatesByAnnotation{
-        val byAnnotation = mutableMapOf<Any, MutableList<Any>>()
-        fun put(annotation:KClass<out Annotation>, delegate: Any ) {
+    class DelegatesByInterface{
+        val byInterface = mutableMapOf<Class<*>, MutableList<Any>>()
+
+        fun put(delegate: Any) {
+
+            // What flavor are we?
+            val graQLInterface = delegate::class.java.interfaces.find { it ->
+                GraQLDelegate::class.java.isAssignableFrom( it )
+            }
+            if ( graQLInterface == null ) {
+                throw RuntimeException("Whoa nelly. You've implemented something (${delegate::class.simpleName}) in GraQL where your delegate doesn't implement the necessary GraQLDelegate interface. It's marker: add it and you should be fine.")
+            }
+
             when {
-                !byAnnotation.containsKey( annotation ) -> byAnnotation.put( annotation, mutableListOf( delegate ) )
-                else -> byAnnotation.get( annotation )!!.add( delegate )
+                !byInterface.containsKey( graQLInterface ) -> byInterface.put( graQLInterface, mutableListOf( delegate ) )
+                else -> byInterface.get( graQLInterface )!!.add( delegate )
             }
         }
-        fun <T> find(annotation:KClass<out Annotation> ):List<T>{
-            val isItThere = byAnnotation.containsKey(annotation)
+        fun <T> find( clazz:Class<*> ):List<T>{
+            val isItThere = byInterface.containsKey(clazz)
             return when {
-                isItThere -> byAnnotation.get( annotation ) as List<T>
+                isItThere -> byInterface.get( clazz ) as List<T>
                 else -> emptyList()
             }
         }
