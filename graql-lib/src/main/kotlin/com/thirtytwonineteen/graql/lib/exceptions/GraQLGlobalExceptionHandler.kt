@@ -1,27 +1,44 @@
 package com.thirtytwonineteen.graql.lib.exceptions
 
-import com.thirtytwonineteen.graql.GraQL
-import com.thirtytwonineteen.graql.GraQLComponent
+import com.thirtytwonineteen.graql.lib.event.GraQLScanningComplete
 import graphql.GraphQLError
 import graphql.GraphqlErrorBuilder
 import graphql.execution.DataFetcherExceptionHandlerParameters
 import graphql.execution.DataFetcherExceptionHandlerResult
 import graphql.execution.SimpleDataFetcherExceptionHandler
+import io.micronaut.context.event.ApplicationEventListener
+import jakarta.inject.Singleton
 import java.lang.reflect.InvocationTargetException
 import java.util.concurrent.CompletableFuture
 
 
-@GraQLComponent
-class GraQLGlobalExceptionHandler(
-    val graQL: GraQL
-): SimpleDataFetcherExceptionHandler() {
-    override fun handleException(handlerParameters: DataFetcherExceptionHandlerParameters): CompletableFuture<DataFetcherExceptionHandlerResult> {
-        val ex = when {
-            handlerParameters.exception is InvocationTargetException -> ( handlerParameters.exception as InvocationTargetException).targetException
-            else -> handlerParameters.exception
-        }
+@Singleton
+class GraQLGlobalExceptionHandler(): SimpleDataFetcherExceptionHandler(), ApplicationEventListener<GraQLScanningComplete> {
 
-        val exceptionTranslator:GraQLExceptionTranslatorReference? = graQL.getExceptionTranslatorFor( ex )
+    override fun onApplicationEvent(event: GraQLScanningComplete) {
+        exceptionTranslators = event.results.exceptionTranslators
+    }
+
+    lateinit var exceptionTranslators:Map<Class<Throwable>, GraQLExceptionTranslatorReference>
+
+    fun actualExceptionFor( exception : Throwable ) : Throwable {
+        return when {
+            exception is InvocationTargetException -> ( exception ).targetException
+            else -> exception
+        }
+    }
+
+    fun exceptionTranslatorFor(actualException : Throwable ) : GraQLExceptionTranslatorReference? {
+        return exceptionTranslators.get( actualException::class.java )
+    }
+
+    fun hasExceptionTranslatorFor( exception : Throwable ) : Boolean {
+        return exceptionTranslatorFor( actualExceptionFor( exception ) ) != null
+    }
+
+    override fun handleException(handlerParameters: DataFetcherExceptionHandlerParameters): CompletableFuture<DataFetcherExceptionHandlerResult> {
+        val ex = actualExceptionFor( handlerParameters.exception )
+        val exceptionTranslator:GraQLExceptionTranslatorReference? = exceptionTranslatorFor( ex )
 
         if ( exceptionTranslator != null ) {
             val builder = GraphQLError.newError()

@@ -13,20 +13,14 @@ import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.ResourceResolver
 import io.micronaut.runtime.http.scope.RequestScope
-import jakarta.inject.Named
 import jakarta.inject.Singleton
 import org.dataloader.DataLoader
 import org.dataloader.DataLoaderRegistry
-import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 @Factory
 class GraQLFactory {
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(GraQLFactory::class.java)
-    }
 
     @Singleton
     fun graphQL(

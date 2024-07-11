@@ -1,10 +1,11 @@
 package com.thirtytwonineteen.graql.lib.config
 
+import DefaultGraQLDelegatingFetch
 import com.thirtytwonineteen.graql.*
 import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLDelegationException
-import com.thirtytwonineteen.graql.lib.fetcher.*
-import com.thirtytwonineteen.graql.lib.loader.DefaultGraQLDelegatingBatchLoader
-import com.thirtytwonineteen.graql.lib.loader.DefaultGraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.delegates.*
+import com.thirtytwonineteen.graql.lib.delegates.impl.*
+import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import com.thirtytwonineteen.graql.lib.mapping.GraQLRequestParameterMapper
 import io.micronaut.context.BeanContext
 import io.micronaut.inject.BeanDefinition
@@ -49,7 +50,8 @@ open class DefaultGraQLDelegationFactory(
 
 @Singleton @Named("graQLFetchConfigurator")
 class DefaultGraQLFetchConfigurator(
-    private val beanContext:BeanContext
+    private val beanContext:BeanContext,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
 ) : GraQLDelegationConfigurator<GraQLFetch> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
         val annotation = a as GraQLFetch
@@ -61,6 +63,7 @@ class DefaultGraQLFetchConfigurator(
         val requestParameter = method.parameters.first()
 
         return listOf(DefaultGraQLDelegatingFetch(
+            exceptionHandler = exceptionHandler,
             type = when {
                 annotation.type.isBlank() -> requestParameter.type.simpleName
                 else -> annotation.type
@@ -79,6 +82,7 @@ class DefaultGraQLFetchConfigurator(
 class DefaultGraQLQueryConfigurator(
     private val beanContext:BeanContext,
     private val parameterMapper: GraQLRequestParameterMapper,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
 ) : GraQLDelegationConfigurator<GraQLQuery> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
         val annotation = a as GraQLQuery
@@ -87,20 +91,23 @@ class DefaultGraQLQueryConfigurator(
         }
         val requestParameter = method.parameters.first()
 
-        return listOf(DefaultGraQLDelegatingQuery(
-            name = when {
-                annotation.name.isBlank() -> method.name
-                else -> annotation.name
-            },
-            method = method,
-            target = beanContext.getBean( beanDefinition ),
-            argumentName = when {
-                annotation.input.isBlank() -> requestParameter.name
-                else -> annotation.input
-            },
-            requestType = requestParameter.type,
-            requestParameterMapper = parameterMapper
-        ))
+        return listOf(
+            DefaultGraQLDelegatingQuery(
+                exceptionHandler = exceptionHandler,
+                name = when {
+                    annotation.name.isBlank() -> method.name
+                    else -> annotation.name
+                },
+                method = method,
+                target = beanContext.getBean( beanDefinition ),
+                argumentName = when {
+                    annotation.input.isBlank() -> requestParameter.name
+                    else -> annotation.input
+                },
+                requestType = requestParameter.type,
+                requestParameterMapper = parameterMapper
+            )
+        )
     }
 }
 
@@ -108,6 +115,7 @@ class DefaultGraQLQueryConfigurator(
 class DefaultGraQLMutationConfigurator(
     private val beanContext:BeanContext,
     private val parameterMapper: GraQLRequestParameterMapper,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
 ) : GraQLDelegationConfigurator<GraQLMutation> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
         val annotation = a as GraQLMutation
@@ -116,26 +124,30 @@ class DefaultGraQLMutationConfigurator(
         }
         val requestParameter = method.parameters.first()
 
-        return listOf(DefaultGraQLDelegatingMutation(
-            name = when {
-                annotation.name.isBlank() -> method.name
-                else -> annotation.name
-            },
-            method = method,
-            target = beanContext.getBean( beanDefinition ),
-            argumentName = when {
-                annotation.input.isBlank() -> "input"
-                else -> annotation.input
-            },
-            requestType = requestParameter.type,
-            requestParameterMapper = parameterMapper
-        ))
+        return listOf(
+            DefaultGraQLDelegatingMutation(
+                exceptionHandler = exceptionHandler,
+                name = when {
+                    annotation.name.isBlank() -> method.name
+                    else -> annotation.name
+                },
+                method = method,
+                target = beanContext.getBean( beanDefinition ),
+                argumentName = when {
+                    annotation.input.isBlank() -> "input"
+                    else -> annotation.input
+                },
+                requestType = requestParameter.type,
+                requestParameterMapper = parameterMapper
+            )
+        )
     }
 }
 
 @Singleton @Named("graQLDataLoaderConfigurator")
 class DefaultGraQLDataLoaderConfigurator(
     private val beanContext:BeanContext,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
     @Named(TaskExecutors.BLOCKING) var defaultExecutor: ExecutorService // <2>
 ) : GraQLDelegationConfigurator<GraQLDataLoader> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
@@ -146,6 +158,7 @@ class DefaultGraQLDataLoaderConfigurator(
 
         return listOf(
             DefaultGraQLDelegatingBatchLoader(
+                exceptionHandler = exceptionHandler,
                 dataLoaderName = when {
                     annotation.name.isBlank() -> method.name
                     else -> annotation.name
@@ -161,6 +174,7 @@ class DefaultGraQLDataLoaderConfigurator(
 @Singleton @Named("graQLMappedDataLoaderConfigurator")
 class DefaultGraQLMappedDataLoaderConfigurator(
     private val beanContext:BeanContext,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
     @Named(TaskExecutors.BLOCKING) var defaultExecutor: ExecutorService // <2>
 ) : GraQLDelegationConfigurator<GraQLMappedDataLoader> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
@@ -169,21 +183,25 @@ class DefaultGraQLMappedDataLoaderConfigurator(
             throw GraQLDelegationException("Cannot create GraQLDelegatingMappedBatchLoader delegate for ${method.declaringClass.simpleName}::${method.name}: it does not require exactly one parameter.")
         }
 
-        return listOf(DefaultGraQLDelegatingMappedBatchLoader(
-            dataLoaderName = when {
-                annotation.name.isBlank() -> method.name
-                else -> annotation.name
-            },
-            method = method,
-            target = beanContext.getBean( beanDefinition ),
-            executor = defaultExecutor,
-        ))
+        return listOf(
+            DefaultGraQLDelegatingMappedBatchLoader(
+                exceptionHandler = exceptionHandler,
+                dataLoaderName = when {
+                    annotation.name.isBlank() -> method.name
+                    else -> annotation.name
+                },
+                method = method,
+                target = beanContext.getBean( beanDefinition ),
+                executor = defaultExecutor,
+            )
+        )
     }
 }
 
 @Singleton @Named("graQLMappedBatchFetchConfigurator")
 class DefaultGraQLMappedBatchFetchConfigurator(
     private val beanContext:BeanContext,
+    private val exceptionHandler: GraQLGlobalExceptionHandler,
     @Named(TaskExecutors.BLOCKING) var defaultExecutor: ExecutorService // <2>
 ) : GraQLDelegationConfigurator<GraQLMappedBatchFetch> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
@@ -236,18 +254,21 @@ class DefaultGraQLMappedBatchFetchConfigurator(
         val fetcher =  DefaultGraQLDataLoaderFetch(
             type = type,
             field = field,
-            dataLoaderName = dataLoaderName
+            dataLoaderName = dataLoaderName,
+            exceptionHandler = exceptionHandler,
         )
 
         // a conventionally-named data loader that actually invokes this method...
         val loader = when {
             useMappedLoader -> DefaultGraQLDelegatingMappedBatchLoader(
+                exceptionHandler = exceptionHandler,
                 dataLoaderName = dataLoaderName,
                 method = method,
                 target = beanContext.getBean( beanDefinition ),
                 executor = defaultExecutor,
             )
             else -> DefaultGraQLDelegatingBatchLoader(
+                exceptionHandler = exceptionHandler,
                 dataLoaderName = dataLoaderName,
                 method = method,
                 target = beanContext.getBean( beanDefinition ),

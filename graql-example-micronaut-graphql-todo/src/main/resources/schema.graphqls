@@ -13,6 +13,7 @@ input CreateToDoRequest {
 input ToDoDTO {
     title: String!
     author: String!
+    dueDate: DateTime!
 }
 type CreateToDoResponse {
     id: ID!

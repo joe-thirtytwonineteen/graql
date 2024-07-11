@@ -2,8 +2,7 @@ package com.thirtytwonineteen.graql
 
 import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLBeanScanner
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLExceptionTranslatorReference
-import com.thirtytwonineteen.graql.lib.fetcher.*
-import com.thirtytwonineteen.graql.lib.loader.*
+import com.thirtytwonineteen.graql.lib.delegates.*
 import graphql.schema.GraphQLScalarType
 import jakarta.inject.Singleton
 
@@ -32,12 +31,7 @@ class GraQL(
         return graQLBeanScanner.delegatesForType(GraQLDelegatingBatchLoader::class.java)
     }
 
-    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader<Any,Any>> get() {
+    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader<Any, Any>> get() {
         return graQLBeanScanner.delegatesForType(GraQLDelegatingMappedBatchLoader::class.java)
     }
-
-    fun getExceptionTranslatorFor(e:Throwable):GraQLExceptionTranslatorReference? {
-        return graQLBeanScanner.exceptionTranslators.get( e::class.java )
-    }
-
 }

@@ -2,14 +2,18 @@ package com.thirtytwonineteen.graql.lib.config.micronaut
 
 import com.thirtytwonineteen.graql.*
 import com.thirtytwonineteen.graql.lib.config.GraQLDelegationFactory
+import com.thirtytwonineteen.graql.lib.event.GraQLScanningComplete
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLExceptionTranslatorReference
+import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphqlErrorBuilder
 import graphql.schema.Coercing
 import graphql.schema.GraphQLScalarType
 import io.micronaut.context.BeanContext
 import io.micronaut.context.annotation.Context
+import io.micronaut.context.event.ApplicationEventPublisher
 import io.micronaut.inject.BeanDefinition
 import io.micronaut.inject.qualifiers.Qualifiers
+import jakarta.inject.Inject
 import java.lang.reflect.Method
 
 @Context
@@ -17,6 +21,9 @@ class GraQLBeanScanner(
     private val beanContext: BeanContext,
     private val delegationFactory: GraQLDelegationFactory,
 ) {
+
+    @Inject
+    private lateinit var eventPublisher: ApplicationEventPublisher<GraQLScanningComplete>
 
     val graQLScalars:Set<GraphQLScalarType> by lazy {
         beanContext
@@ -46,6 +53,7 @@ class GraQLBeanScanner(
 
     val exceptionTranslators:Map<Class<Throwable>, GraQLExceptionTranslatorReference> by lazy {
         delegatesByType.exceptionTranslators
+
     }
 
     val componentDefinitions:Collection<BeanDefinition<*>> by lazy {
@@ -89,6 +97,8 @@ class GraQLBeanScanner(
                         }
                     }
             }
+
+        eventPublisher.publishEvent( GraQLScanningComplete( results ) )
 
         results
     }

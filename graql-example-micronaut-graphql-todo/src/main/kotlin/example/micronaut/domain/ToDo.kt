@@ -22,7 +22,7 @@ import io.micronaut.data.annotation.MappedEntity
 import java.time.LocalDateTime
 
 @MappedEntity // <1>
-class ToDo(var title: String, val authorId: Long) {
+class ToDo(var title: String, val authorId: Long, val dueDate:LocalDateTime) {
 
     @Id // <2>
     @GeneratedValue(AUTO)

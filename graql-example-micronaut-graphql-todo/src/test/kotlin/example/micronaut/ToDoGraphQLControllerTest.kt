@@ -88,7 +88,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         assertTrue(dateCompleted >= now)
 
         // when:
-        val res = createToDoResponse( "nope", "nyet" )
+        val res = createToDoRequest( "nope", "nyet" )
 
         // then:
         assertNull( res.get("id") )
@@ -156,13 +156,14 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
             return query("toDos", "title, completed, dateCompleted, author { id, username }")
         }
 
-    private fun createToDoResponse(title: String, author: String): Map<*,*> {
+    private fun createToDoRequest(title: String, author: String): Map<*,*> {
         val res = mutate(
             "createToDo",
             mapOf(
                 "toDo" to mapOf(
                     "title" to title,
-                    "author" to author
+                    "author" to author,
+                    "dueDate" to LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                 ),
             ),
             listOf("id"),
@@ -173,7 +174,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
     }
 
     private fun createToDo(title: String, author: String): Long {
-        return createToDoResponse(title, author).get("id").toString().toLong()
+        return createToDoRequest(title, author).get("id").toString().toLong()
     }
 
     private fun markAsCompleted(id: Long): Boolean {

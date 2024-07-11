@@ -1,17 +1,11 @@
-package com.thirtytwonineteen.graql.lib.fetcher
+package com.thirtytwonineteen.graql.lib.delegates.impl
 
-import com.thirtytwonineteen.graql.GraQLDelegate
+import com.thirtytwonineteen.graql.lib.delegates.GraQLDelegatingQuery
+import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import com.thirtytwonineteen.graql.lib.mapping.GraQLRequestParameterMapper
-import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
+import org.slf4j.LoggerFactory
 import java.lang.reflect.Method
-
-interface GraQLDelegatingQuery<T>:DataFetcher<T>, GraQLDelegate {
-    val name:String
-    val argumentName: String
-    val requestType: Class<*>
-
-}
 
 class DefaultGraQLDelegatingQuery(
     override val name:String,
@@ -20,7 +14,9 @@ class DefaultGraQLDelegatingQuery(
     val requestParameterMapper: GraQLRequestParameterMapper,
     val method: Method,
     val target: Any,
-):GraQLDelegatingQuery<Any> {
+    exceptionHandler: GraQLGlobalExceptionHandler,
+): GraQLDelegatingQuery<Any>, AbstractGraQLDelegate(exceptionHandler) {
+
     override fun get(env: DataFetchingEnvironment): Any? {
         val arg = env.getArgument<Any>(argumentName)
 
@@ -28,7 +24,12 @@ class DefaultGraQLDelegatingQuery(
             arg == null -> null
             else -> requestParameterMapper.map( arg, requestType )
         }
-        val res = method.invoke( target, req )
-        return res
+
+        return withExceptionHandling(
+            {
+                method.invoke( target, req )
+            },
+            { "Error delegating to ${target::class.simpleName}::${method.name}: your client should get an error message. Exception is logged." }
+        )
     }
 }

@@ -26,7 +26,7 @@ open class ToDoService(
         val dto = req.toDo
         val author = authorRepository.findOrCreate(dto.author)
         val toDo = toDoRepository.save(
-            ToDo(dto.title, author.id!!)
+            ToDo(dto.title, author.id!!, dto.dueDate)
         )
         return CreateToDoResponse(
             toDo.id!!,
@@ -92,7 +92,8 @@ data class CreateToDoRequest(@Valid val toDo: ToDoDTO)
 @Introspected
 data class ToDoDTO(
     @field:Size(min = 5) val title: String,
-    @field:Size(min = 5) val author:String
+    @field:Size(min = 5) val author:String,
+    val dueDate:LocalDateTime
 )
 
 data class CreateToDoResponse( val id: Long, val authorId: Long )
