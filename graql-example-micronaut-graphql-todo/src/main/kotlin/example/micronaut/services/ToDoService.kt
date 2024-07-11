@@ -34,7 +34,7 @@ class ToDoService(
         // None
 
         // Operation
-        return toDoRepository.findAll()
+        return toDoRepository.findAllOrderByIdAsc()
     }
 
     fun findToDoById(id: Long) : ToDo {
@@ -57,7 +57,7 @@ class ToDoService(
         return CompleteToDoResponse( req.id )
     }
 
-    fun findAuthorsByIdIn(ids: List<Long>) : Collection<Author> {
+    fun findAuthorsByIdIn(ids: List<Long>) : List<Author> {
         // Authorization
         // None
 

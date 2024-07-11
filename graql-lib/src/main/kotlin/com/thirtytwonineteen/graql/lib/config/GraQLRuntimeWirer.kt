@@ -9,7 +9,9 @@ import com.thirtytwonineteen.graql.lib.fetcher.GraQLDelegatingFetch
 import com.thirtytwonineteen.graql.lib.fetcher.GraQLDelegatingMutation
 import com.thirtytwonineteen.graql.lib.fetcher.GraQLDelegatingQuery
 import com.thirtytwonineteen.graql.lib.loader.GraQLDelegatingMappedBatchLoader
+import graphql.execution.instrumentation.SimpleInstrumentationContext
 import graphql.schema.idl.*
+import io.micronaut.context.annotation.Bean
 import io.micronaut.runtime.http.scope.RequestScope
 import org.dataloader.DataLoader
 import org.dataloader.DataLoaderRegistry
@@ -47,17 +49,4 @@ open class GraQLRuntimeWirer(
 
         return builder
     }
-
-    @Suppress("unused")
-    @RequestScope // <2>
-    open fun dataLoaderRegistry(): DataLoaderRegistry {
-        val dataLoaderRegistry = DataLoaderRegistry()
-
-        graQL.mappedBatchLoaders.forEach{
-            dataLoaderRegistry.register( it.dataLoaderName, DataLoader.newMappedDataLoader(it) )
-        }
-
-        return dataLoaderRegistry
-    }
-
 }

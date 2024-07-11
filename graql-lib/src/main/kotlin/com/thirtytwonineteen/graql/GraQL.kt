@@ -2,7 +2,7 @@ package com.thirtytwonineteen.graql
 
 import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLBeanScanner
 import com.thirtytwonineteen.graql.lib.fetcher.*
-import com.thirtytwonineteen.graql.lib.loader.GraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.loader.*
 import jakarta.inject.Singleton
 
 @Singleton
@@ -10,20 +10,24 @@ class GraQL(
     private val graQLBeanScanner: GraQLBeanScanner
 ) {
 
-    val queries:List<GraQLDelegatingQuery> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingQuery::class)
+    val queries:List<GraQLDelegatingQuery<Any>> get() {
+        return graQLBeanScanner.delegatesForType(GraQLDelegatingQuery::class.java)
     }
 
-    val mutations:List<GraQLDelegatingMutation> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingMutation::class)
+    val mutations:List<GraQLDelegatingMutation<Any>> get() {
+        return graQLBeanScanner.delegatesForType(GraQLDelegatingMutation::class.java)
     }
 
-    val fetches:List<GraQLDelegatingFetch> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingFetch::class)
+    val fetches:List<GraQLDelegatingFetch<Any>> get() {
+        return graQLBeanScanner.delegatesForType(GraQLDelegatingFetch::class.java)
     }
 
-    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader> get() {
-        return graQLBeanScanner.delegatesForType(GraQLDelegatingMappedBatchLoader::class)
+    val batchLoaders:List<GraQLDelegatingBatchLoader<Any, Any>> get() {
+        return graQLBeanScanner.delegatesForType(GraQLDelegatingBatchLoader::class.java)
+    }
+
+    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader<Any,Any>> get() {
+        return graQLBeanScanner.delegatesForType(GraQLDelegatingMappedBatchLoader::class.java)
     }
 
 }

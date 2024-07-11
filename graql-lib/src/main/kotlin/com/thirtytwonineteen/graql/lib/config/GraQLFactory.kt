@@ -1,5 +1,6 @@
 package com.thirtytwonineteen.graql.lib.config
 
+import com.thirtytwonineteen.graql.GraQL
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.idl.RuntimeWiring
@@ -10,7 +11,11 @@ import io.micronaut.context.annotation.Factory
 import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.ResourceResolver
+import io.micronaut.runtime.http.scope.RequestScope
+import jakarta.inject.Named
 import jakarta.inject.Singleton
+import org.dataloader.DataLoader
+import org.dataloader.DataLoaderRegistry
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
@@ -23,7 +28,6 @@ class GraQLFactory {
     }
 
     @Singleton
-    @Requirements(Requires(bean = GraQLConfigurationProperties::class, beanProperty = "autowire", value = "true"))
     fun graphQL(
         resourceResolver: ResourceResolver,
         graQLConfigurationProperties: GraQLConfigurationProperties,
@@ -59,6 +63,23 @@ class GraQLFactory {
                 "No GraphQL services found, not creating GraphQL bean: creating an empty schema will throw an even more vague exception than this. Check your configured schema locations (${graQLConfigurationProperties.schemaLocations}) to make sure schema files exist."
             )
         }
+    }
+
+    @Suppress("unused")
+    @RequestScope
+    open fun dataLoaderRegistry(
+        graQL: GraQL
+    ): DataLoaderRegistry {
+        val dataLoaderRegistry = DataLoaderRegistry()
+
+        graQL.batchLoaders.forEach{
+            dataLoaderRegistry.register( it.dataLoaderName, DataLoader.newDataLoader(it) )
+        }
+        graQL.mappedBatchLoaders.forEach{
+            dataLoaderRegistry.register( it.dataLoaderName, DataLoader.newMappedDataLoader(it) )
+        }
+
+        return dataLoaderRegistry
     }
 
 }

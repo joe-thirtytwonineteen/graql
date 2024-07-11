@@ -19,6 +19,9 @@ import example.micronaut.domain.ToDo
 import io.micronaut.data.jdbc.annotation.JdbcRepository
 import io.micronaut.data.model.query.builder.sql.Dialect.POSTGRES
 import io.micronaut.data.repository.PageableRepository
+import java.time.LocalDate
 
 @JdbcRepository(dialect = POSTGRES) // <1>
-interface ToDoRepository : PageableRepository<ToDo, Long> // <2>
+interface ToDoRepository : PageableRepository<ToDo, Long> {
+    fun findAllOrderByIdAsc(): List<ToDo>
+}

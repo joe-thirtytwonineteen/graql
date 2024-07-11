@@ -1,17 +1,26 @@
 package com.thirtytwonineteen.graql.lib.fetcher
 
 import com.google.gson.Gson
+import com.thirtytwonineteen.graql.GraQLDelegate
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import java.lang.reflect.Method
 
-class GraQLDelegatingMutation(
-    val name:String,
+interface GraQLDelegatingMutation<T>:DataFetcher<T>, GraQLDelegate {
+    val name:String
+    val argumentName: String
+    val requestType: Class<*>
+
+    override fun get(env: DataFetchingEnvironment): T?
+}
+
+class DefaultGraQLDelegatingMutation(
+    override val name:String,
+    override val argumentName: String,
+    override val requestType: Class<*>,
     val method: Method,
     val target: Any,
-    val argumentName: String,
-    val requestType: Class<*>,
-):DataFetcher<Any> {
+):GraQLDelegatingMutation<Any> {
     override fun get(env: DataFetchingEnvironment): Any? {
         val arg = env.getArgument<Map<Any, Any>?>(argumentName)
 

@@ -38,7 +38,7 @@ class GraQLTest(
 
         When("we ask for GraQL query delegates we can find them and they have their correct names") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegates = graQL.queries.filter{ it.target == fixtureComponent }
+            val delegates = graQL.queries
 
             Then("we find two annotated methods") {
                 delegates.size shouldBe 3
@@ -53,7 +53,7 @@ class GraQLTest(
 
         When("we look up a GraQL query delegate and run it with a DataFetchingEnvironment") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.queries.filter{ it.target == fixtureComponent }.filter{ it.name == "isAQuery"}.first()
+            val delegate = graQL.queries.filter{ it.name == "isAQuery"}.first()
             val dfe = DataFetchingEnvironmentImpl
                 .Builder()
                 .arguments(
@@ -75,7 +75,7 @@ class GraQLTest(
 
         When("we look up a GraQL query delegate with custom names and run it with a DataFetchingEnvironment") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.queries.filter{ it.target == fixtureComponent }.filter{ it.name == "isANamedQueryWithInputName"}.first()
+            val delegate = graQL.queries.filter{ it.name == "isANamedQueryWithInputName"}.first()
             val dfe = DataFetchingEnvironmentImpl
                 .Builder()
                 .arguments(
@@ -97,7 +97,7 @@ class GraQLTest(
         
         When("we ask for GraQL mutation delegates we can find them and they have their correct names") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegates = graQL.mutations.filter{ it.target == fixtureComponent }
+            val delegates = graQL.mutations
 
             Then("we find two annotated methods") {
                 delegates.size shouldBe 3
@@ -112,7 +112,7 @@ class GraQLTest(
 
         When("we look up a GraQL mutation delegate and run it with a DataFetchingEnvironment") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mutations.filter{ it.target == fixtureComponent }.filter{ it.name == "isAMutation"}.first()
+            val delegate = graQL.mutations.filter{ it.name == "isAMutation"}.first()
             val dfe = DataFetchingEnvironmentImpl
                 .Builder()
                 .arguments(
@@ -134,7 +134,7 @@ class GraQLTest(
 
         When("we look up a GraQL mutation delegate with custom names and run it with a DataFetchingEnvironment") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mutations.filter{ it.target == fixtureComponent }.filter{ it.name == "isANamedMutationWithInputName"}.first()
+            val delegate = graQL.mutations.filter{ it.name == "isANamedMutationWithInputName"}.first()
             val dfe = DataFetchingEnvironmentImpl
                 .Builder()
                 .arguments(
@@ -156,10 +156,10 @@ class GraQLTest(
         
         When("we look up a GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.target == fixtureComponent }.filter{ it.dataLoaderName == "things"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "things"}.first()
 
 
-            val stage = delegate.load(mutableSetOf(1, 2, 3, 4))
+            val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)
             val stuff = stage.toCompletableFuture().join()
 
             Then("We get a result populated by the loader") {
@@ -179,10 +179,10 @@ class GraQLTest(
 
         When("we look up a named GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.target == fixtureComponent }.filter{ it.dataLoaderName == "otherThings"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "otherThings"}.first()
 
 
-            val stage = delegate.load(mutableSetOf(1, 2, 3, 4))
+            val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)
             val stuff = stage.toCompletableFuture().join()
 
             Then("We get a result populated by the loader") {
@@ -202,10 +202,10 @@ class GraQLTest(
 
         When("we look up a named-via-repetition GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.target == fixtureComponent }.filter{ it.dataLoaderName == "yetMoreThings"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "yetMoreThings"}.first()
 
 
-            val stage = delegate.load(mutableSetOf(1, 2, 3, 4))
+            val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)
             val stuff = stage.toCompletableFuture().join()
 
             Then("We get a result populated by the loader") {

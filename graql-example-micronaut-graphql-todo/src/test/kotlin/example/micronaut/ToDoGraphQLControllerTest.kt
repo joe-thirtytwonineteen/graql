@@ -43,15 +43,17 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
 
         // when:
         val id = createToDo("Test GraphQL", "Tim Yates")
+        val id2 = createToDo("Simplify GraphQL", "Some Knucklehead")
 
         // then: (check it's a UUID)
         assertEquals(1, id)
+        assertEquals(2, id2)
 
         // when:
         todos = allTodos
 
         // then:
-        assertEquals(1, todos.size)
+        assertEquals(2, todos.size)
         var todo = todos[0]
         assertEquals("Test GraphQL", todo["title"])
         assertFalse(java.lang.Boolean.parseBoolean(todo["completed"].toString()))
@@ -70,7 +72,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         todos = allTodos
 
         // then:
-        assertEquals(1, todos.size)
+        assertEquals(2, todos.size)
         todo = todos[0]
         assertEquals("Test GraphQL", todo["title"])
         assertTrue(java.lang.Boolean.parseBoolean(todo["completed"].toString()))

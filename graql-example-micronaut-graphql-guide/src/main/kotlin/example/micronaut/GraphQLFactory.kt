@@ -25,6 +25,7 @@ import graphql.schema.idl.TypeDefinitionRegistry
 import graphql.schema.idl.TypeRuntimeWiring
 import io.micronaut.context.annotation.Bean
 import io.micronaut.context.annotation.Factory
+import io.micronaut.context.annotation.Replaces
 import io.micronaut.core.io.ResourceResolver
 import org.slf4j.LoggerFactory
 import java.io.BufferedReader
@@ -36,6 +37,7 @@ class GraphQLFactory {
 
     @Bean
     @Singleton
+    @Replaces(GraphQL::class)
     fun graphQL(resourceResolver: ResourceResolver, graQLRuntimeWirer: GraQLRuntimeWirer): GraphQL {
         val schemaParser = SchemaParser() // <2>
 

@@ -7,7 +7,6 @@ import io.micronaut.context.annotation.Context
 import io.micronaut.inject.BeanDefinition
 import io.micronaut.inject.qualifiers.Qualifiers
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
 
 @Context
 class GraQLBeanScanner(
@@ -19,42 +18,53 @@ class GraQLBeanScanner(
         beanContext.getBeanDefinitions(Qualifiers.byStereotype(GraQLComponent::class.java))
     }
 
-    fun <T> delegatesForType( clazz: KClass<*> ):List<T>{
-        return delegatesByType.forType( clazz )
+    fun <T> delegatesForType(clazz: Class<*> ):List<T>{
+        return delegatesByType.find( clazz )
     }
 
-    private val delegatesByType: DelegatesByType by lazy {
-        val byType = DelegatesByType()
+    private val delegatesByType: DelegatesByInterface by lazy {
+        val byInterface = DelegatesByInterface()
 
         componentDefinitions
             .forEach{ beanDefinition ->
                 delegationFactory.delegateConfigurators.forEach{ key, configurator ->
                     beanDefinition.beanType.methods
                         .forEach { method: Method ->
-                            method.getAnnotationsByType( key ).forEach { annotation ->
+                            method.getAnnotationsByType( key.java ).forEach { annotation ->
                                 listOf( key, annotation )
-                                val d = configurator.createDelegate(beanDefinition, method, annotation)!!
-                                byType.putByType( d::class, d )
+                                configurator.createDelegate(beanDefinition, method, annotation).forEach{
+                                    byInterface.put( it )
+                                }
                             }
                         }
                 }
             }
 
-        byType
+        byInterface
     }
 
-    private class DelegatesByType{
-        val byType = mutableMapOf<KClass<*>, MutableList<Any>>()
-        fun putByType(clazz: KClass<*>, delegate: Any ) {
+    class DelegatesByInterface{
+        val byInterface = mutableMapOf<Class<*>, MutableList<Any>>()
+
+        fun put(delegate: Any) {
+
+            // What flavor are we?
+            val graQLInterface = delegate::class.java.interfaces.find { it ->
+                GraQLDelegate::class.java.isAssignableFrom( it )
+            }
+            if ( graQLInterface == null ) {
+                throw RuntimeException("Whoa nelly. You've implemented something (${delegate::class.simpleName}) in GraQL where your delegate doesn't implement the necessary GraQLDelegate interface. It's marker: add it and you should be fine.")
+            }
+
             when {
-                !byType.containsKey( clazz ) -> byType.put( clazz, mutableListOf( delegate ) )
-                else -> byType.get( clazz )!!.add( delegate )
+                !byInterface.containsKey( graQLInterface ) -> byInterface.put( graQLInterface, mutableListOf( delegate ) )
+                else -> byInterface.get( graQLInterface )!!.add( delegate )
             }
         }
-        fun <T> forType( clazz: KClass<*> ):List<T>{
-            val isItThere = byType.containsKey(clazz)
+        fun <T> find( clazz:Class<*> ):List<T>{
+            val isItThere = byInterface.containsKey(clazz)
             return when {
-                isItThere -> byType.get( clazz ) as List<T>
+                isItThere -> byInterface.get( clazz ) as List<T>
                 else -> emptyList()
             }
         }
