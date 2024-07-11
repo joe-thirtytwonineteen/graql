@@ -30,7 +30,7 @@ GraQL is about one step beyond an experiment. There's a reason you'd need to clo
 | Query Caching                 | Automatic, configuration in application.properties, replaceable at will. | Do it yourself.            | Just add their bean           |          |
 | Query DSL/CodeGen | Netflix DGS Codegen-compatible | DSL | DGS CodeGen                   |
 
-* _well enough for not-yet-in-production application
+* _well enough for a not-yet-in-production application_
 
 
 ## To-Do
@@ -66,9 +66,12 @@ class BookController( val bookService:BookService ) {
         return bookService.create( req )
     }
     
-    // N+1 helper for when people fetch book.author across 50 books!
+    // N+1 helper for when people fetch book.author across 50 books! We'll autodetect if this this becomes
+    // a list or mapped batch fetch based on your method signature, and conventionally create a named
+    // "authorDataLoader" you can use anywhere else.
     @GraQLBatchFetch 
     fun author( books:Collection<Book> ): List<Author> {
+        
         return authorsById = bookService.findAuthorsByIdIn( books.map{ it.authorId } )
     }
 }
