@@ -23,6 +23,8 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
     implementation("jakarta.validation:jakarta.validation-api:3.1.0")
 
+    implementation("com.github.ben-manes.caffeine:caffeine:3.1.8")
+
     // runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 

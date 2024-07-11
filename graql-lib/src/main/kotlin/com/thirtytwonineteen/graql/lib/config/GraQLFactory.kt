@@ -3,14 +3,13 @@ package com.thirtytwonineteen.graql.lib.config
 import com.thirtytwonineteen.graql.GraQL
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphQL
-import graphql.schema.GraphQLSchema
+import graphql.execution.preparsed.PreparsedDocumentProvider
 import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.TypeDefinitionRegistry
+import io.micronaut.context.BeanContext
 import io.micronaut.context.annotation.Factory
-import io.micronaut.context.annotation.Requirements
-import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.ResourceResolver
 import io.micronaut.runtime.http.scope.RequestScope
 import jakarta.inject.Singleton
@@ -24,6 +23,7 @@ class GraQLFactory {
 
     @Singleton
     fun graphQL(
+        beanContext: BeanContext,
         resourceResolver: ResourceResolver,
         graQLConfigurationProperties: GraQLConfigurationProperties,
         graQLRuntimeWirer: GraQLRuntimeWirer,
@@ -50,11 +50,14 @@ class GraQLFactory {
             val schemaGenerator = SchemaGenerator()
             val graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring)
 
-            GraphQL
-                .newGraphQL(graphQLSchema)
+            val builder = GraphQL.newGraphQL(graphQLSchema)
                 .defaultDataFetcherExceptionHandler(graQLGlobalExceptionHandler)
-                .build()
 
+            if ( beanContext.containsBean( PreparsedDocumentProvider::class.java ) ) {
+                builder.preparsedDocumentProvider( beanContext.getBean( PreparsedDocumentProvider::class.java ) )
+            }
+
+            builder.build()
         } else {
             throw RuntimeException(
                 "No GraphQL services found, not creating GraphQL bean: creating an empty schema will throw an even more vague exception than this. Check your configured schema locations (${graQLConfigurationProperties.schemaLocations}) to make sure schema files exist."

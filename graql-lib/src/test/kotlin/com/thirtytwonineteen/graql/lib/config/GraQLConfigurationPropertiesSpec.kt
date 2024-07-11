@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.micronaut.context.BeanContext
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
+import java.time.Duration
 
 @MicronautTest
 class GraQLConfigurationPropertiesSpec(
@@ -17,6 +18,8 @@ class GraQLConfigurationPropertiesSpec(
         When("we inspect graql configuration") {
             Then("we get our configuration") {
                 graQLConfigurationProperties.schemaLocations.first() shouldBe  "classpath:custom-schema/schema.graphqls"
+                graQLConfigurationProperties.queryCache.maxSize shouldBe 200
+                graQLConfigurationProperties.queryCache.expireAfterAccess shouldBe Duration.ofMinutes(5)
             }
         }
 
