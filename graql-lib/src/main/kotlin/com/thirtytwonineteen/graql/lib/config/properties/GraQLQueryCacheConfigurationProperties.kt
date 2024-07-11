@@ -1,14 +1,7 @@
-package com.thirtytwonineteen.graql.lib.config
+package com.thirtytwonineteen.graql.lib.config.properties
 
 import io.micronaut.context.annotation.ConfigurationProperties
 import java.time.Duration
-
-@ConfigurationProperties(value = "graql")
-class GraQLConfigurationProperties(
-    val queryCache:GraQLQueryCacheConfigurationProperties
-) {
-    var schemaLocations = listOf("classpath:schema.graphqls")
-}
 
 @ConfigurationProperties(value = "graql.queryCache")
 class GraQLQueryCacheConfigurationProperties {

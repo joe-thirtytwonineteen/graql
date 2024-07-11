@@ -1,11 +1,9 @@
-package com.thirtytwonineteen.graql.lib.config.micronaut
+package com.thirtytwonineteen.graql.lib.config
 
 import com.thirtytwonineteen.graql.*
-import com.thirtytwonineteen.graql.lib.config.GraQLDelegationFactory
+import com.thirtytwonineteen.graql.lib.config.delegation.GraQLDelegationFactory
 import com.thirtytwonineteen.graql.lib.event.GraQLScanningComplete
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLExceptionTranslatorReference
-import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
-import graphql.GraphqlErrorBuilder
 import graphql.schema.Coercing
 import graphql.schema.GraphQLScalarType
 import io.micronaut.context.BeanContext
@@ -17,7 +15,7 @@ import jakarta.inject.Inject
 import java.lang.reflect.Method
 
 @Context
-class GraQLBeanScanner(
+class GraQLComponentScanner(
     private val beanContext: BeanContext,
     private val delegationFactory: GraQLDelegationFactory,
 ) {
@@ -136,4 +134,3 @@ class GraQLBeanScanner(
     }
 }
 
-class GraQLDelegationException(msg:String) : RuntimeException(msg)

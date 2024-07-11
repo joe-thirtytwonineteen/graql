@@ -2,7 +2,7 @@ package com.thirtytwonineteen.graql.lib.cache
 
 import com.github.benmanes.caffeine.cache.Cache
 import com.github.benmanes.caffeine.cache.Caffeine
-import com.thirtytwonineteen.graql.lib.config.GraQLQueryCacheConfigurationProperties
+import com.thirtytwonineteen.graql.lib.config.properties.GraQLQueryCacheConfigurationProperties
 import graphql.ExecutionInput
 import graphql.execution.preparsed.PreparsedDocumentEntry
 import graphql.execution.preparsed.PreparsedDocumentProvider
@@ -11,7 +11,7 @@ import java.util.concurrent.CompletableFuture
 import java.util.function.Function
 
 @Singleton
-class DefaultGraqlQueryCache( cfg: GraQLQueryCacheConfigurationProperties ) : PreparsedDocumentProvider {
+class DefaultGraqlQueryCache( cfg: GraQLQueryCacheConfigurationProperties) : PreparsedDocumentProvider {
 
     val cache: Cache<String, PreparsedDocumentEntry>
 

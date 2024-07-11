@@ -1,7 +1,7 @@
 package com.thirtytwonineteen.graql.lib
 
 import com.thirtytwonineteen.graql.GraQL
-import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLBeanScanner
+import com.thirtytwonineteen.graql.lib.config.GraQLComponentScanner
 import com.thirtytwonineteen.graql.lib.fixture.*
 import graphql.schema.DataFetchingEnvironmentImpl
 import io.kotest.core.spec.style.BehaviorSpec
@@ -18,7 +18,7 @@ import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 @MicronautTest
 class GraQLTest(
     private val graQL: GraQL,
-    private val beanScanner: GraQLBeanScanner,
+    private val beanScanner: GraQLComponentScanner,
     private val beanContext: BeanContext
 ):BehaviorSpec({
     Given("a GraQLBeanScanner instance") {

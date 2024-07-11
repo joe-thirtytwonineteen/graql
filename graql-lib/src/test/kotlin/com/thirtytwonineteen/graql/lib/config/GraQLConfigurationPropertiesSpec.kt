@@ -1,5 +1,6 @@
 package com.thirtytwonineteen.graql.lib.config
 
+import com.thirtytwonineteen.graql.lib.config.properties.GraQLConfigurationProperties
 import graphql.GraphQL
 import io.kotest.assertions.throwables.shouldNotThrow
 import io.kotest.core.spec.style.BehaviorSpec

@@ -1,6 +1,5 @@
 package com.thirtytwonineteen.graql.lib.event
 
-import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLBeanScanner
-import io.micronaut.context.event.BeanContextEvent
+import com.thirtytwonineteen.graql.lib.config.GraQLComponentScanner
 
-class GraQLScanningComplete( val results: GraQLBeanScanner.BeanScanningResults )
+class GraQLScanningComplete( val results: GraQLComponentScanner.BeanScanningResults )

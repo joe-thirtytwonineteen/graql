@@ -2,14 +2,13 @@ package com.thirtytwonineteen.graql.lib.config
 
 import com.apollographql.federation.graphqljava.Federation
 import com.thirtytwonineteen.graql.GraQL
+import com.thirtytwonineteen.graql.lib.config.properties.GraQLConfigurationProperties
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphQL
 import graphql.execution.preparsed.PreparsedDocumentProvider
 import graphql.schema.DataFetcher
-import graphql.schema.GraphQLSchema
 import graphql.schema.TypeResolver
 import graphql.schema.idl.RuntimeWiring
-import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
 import graphql.schema.idl.TypeDefinitionRegistry
 import io.micronaut.context.BeanContext
