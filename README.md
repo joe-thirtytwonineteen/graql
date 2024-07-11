@@ -22,14 +22,14 @@ GraQL is about one step beyond an experiment. There's a reason you'd need to clo
 |-------------------------------|--------------------------------------------------------------------------|----------------------------|-------------------------------|
 | Queries                       | `@GraQLQuery`                                                            | `@QueryMapping`            | `@DgsQuery`                   |
 | Mutations                     | `@GraQLMutation`                                                         | `@MutationMapping`         | `@DgsMutation`                |
-| Data Loaders                  | `@GraQLMutation`                                                         | Sort of manual             | `@DgsDataLoader`              |
+| Data Loaders                  | `@GraQLDataLoader`, `@GraQLMappedDataLoader`                             | Sort of manual             | `@DgsDataLoader`              |
 | Data Loaders for Fetch (N+1)  | `@GraQLBatchFetch`                                                       | `@BatchMapping`            | Sort of manual                |
 | Federation                    | Automatic!                                                               | Simple to Configure        | Automatic!                    |
 | Validation                    | Micronaut Validation!                                                    | Spring                     | Spring                        |
 | Security (cross-thread!)      | Micronaut Propagration!                                                  | Read the docs | Read the docs                 | 
 | Extensible Exception Handling | `@GraQLExceptionHandler` (and logs the real exception!)                  | `@GraphQlExceptionHandler` | Roll your own (but it's easy) |
 | Query Caching                 | Automatic, configuration in application.properties, replaceable at will. | Do it yourself.            | Just add their bean           |          |
-| Query DSL/CodeGen | Netflix DGS Codegen-compatible | DSL | DGS CodeGen                   |
+| Query DSL/CodeGen | Netflix DGS Codegen-compatible                                           | DSL | DGS CodeGen                   |
 
 * _well enough for a not-yet-in-production application_
 
