@@ -21,8 +21,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}")
     implementation("com.apollographql.federation:federation-graphql-java-support:5.1.0")
     implementation("com.google.code.gson:gson:2.11.0")
+    implementation("jakarta.validation:jakarta.validation-api:3.1.0")
 
-    runtimeOnly("ch.qos.logback:logback-classic")
+    // runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     testImplementation("io.micronaut:micronaut-http-client")

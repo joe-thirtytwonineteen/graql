@@ -1,6 +1,7 @@
 package com.thirtytwonineteen.graql.lib.config
 
 import com.thirtytwonineteen.graql.GraQL
+import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.idl.RuntimeWiring
@@ -31,7 +32,8 @@ class GraQLFactory {
     fun graphQL(
         resourceResolver: ResourceResolver,
         graQLConfigurationProperties: GraQLConfigurationProperties,
-        graQLRuntimeWirer: GraQLRuntimeWirer
+        graQLRuntimeWirer: GraQLRuntimeWirer,
+        graQLGlobalExceptionHandler: GraQLGlobalExceptionHandler,
     ): GraphQL? {
         val schemaParser = SchemaParser() // <2>
 
@@ -56,6 +58,7 @@ class GraQLFactory {
 
             GraphQL
                 .newGraphQL(graphQLSchema)
+                .defaultDataFetcherExceptionHandler(graQLGlobalExceptionHandler)
                 .build()
 
         } else {

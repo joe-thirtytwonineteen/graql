@@ -7,13 +7,11 @@ import graphql.language.Value
 import graphql.schema.Coercing
 import graphql.schema.CoercingParseLiteralException
 import graphql.schema.CoercingSerializeException
-import jakarta.inject.Singleton
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 @GraQLScalar
-@Singleton
 class DateTime: Coercing<LocalDateTime, String> {
 
     override fun serialize(input: Any): String {

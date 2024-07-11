@@ -65,7 +65,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         )
 
         // when:
-        val completed = markAsCompleted(id!!)
+        val completed = markAsCompleted(id)
 
         // then:
         assertTrue(completed)
@@ -88,10 +88,18 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         assertTrue(dateCompleted >= now)
 
         // when:
-        val res = createToDoResponse( "nope", "Prostetnic Vogon Jeltz" )
+        val res = createToDoResponse( "nope", "nyet" )
 
         // then:
         assertNull( res.get("id") )
+        assertTrue( res.get("errors") is List<*>)
+        val errors = res.get("errors") as List<LinkedHashMap<String, Any>>
+        assertTrue( errors.size == 1)
+        val error = errors[0] as Map<String, Any>
+        val ext = error.get("extensions") as Map<String, Any>
+        assertTrue(ext.keys.first().startsWith("createToDo.req.toDo"))
+
+
         // TODO: add exception handling and check the message!
 
     }

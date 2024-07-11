@@ -92,7 +92,7 @@ data class CreateToDoRequest(@Valid val toDo: ToDoDTO)
 @Introspected
 data class ToDoDTO(
     @field:Size(min = 5) val title: String,
-    val author:String
+    @field:Size(min = 5) val author:String
 )
 
 data class CreateToDoResponse( val id: Long, val authorId: Long )
