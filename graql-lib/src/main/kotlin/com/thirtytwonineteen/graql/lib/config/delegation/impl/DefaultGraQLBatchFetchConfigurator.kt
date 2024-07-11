@@ -1,7 +1,7 @@
 package com.thirtytwonineteen.graql.lib.config.delegation.impl
 
 import com.thirtytwonineteen.graql.GraQLDelegate
-import com.thirtytwonineteen.graql.GraQLMappedBatchFetch
+import com.thirtytwonineteen.graql.GraQLBatchFetch
 import com.thirtytwonineteen.graql.lib.config.delegation.GraQLDelegationConfigurator
 import com.thirtytwonineteen.graql.lib.config.GraQLDelegationException
 import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLDataLoaderFetch
@@ -18,15 +18,15 @@ import java.lang.reflect.ParameterizedType
 import java.util.concurrent.ExecutorService
 
 @Singleton
-@Named("graQLMappedBatchFetchConfigurator")
-class DefaultGraQLMappedBatchFetchConfigurator(
+@Named("graQLBatchFetchConfigurator")
+class DefaultGraQLBatchFetchConfigurator(
     private val beanContext: BeanContext,
     private val exceptionHandler: GraQLGlobalExceptionHandler,
     @Named(TaskExecutors.BLOCKING) var defaultExecutor: ExecutorService // <2>
-) : GraQLDelegationConfigurator<GraQLMappedBatchFetch> {
+) : GraQLDelegationConfigurator<GraQLBatchFetch> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
 
-        val annotation = a as GraQLMappedBatchFetch
+        val annotation = a as GraQLBatchFetch
 
         if ( method.parameters.size != 1 ) {
             throw GraQLDelegationException("Cannot create GraQLMappedBatchFetch delegate for ${method.declaringClass.simpleName}::${method.name}: it does not require exactly one parameter.")

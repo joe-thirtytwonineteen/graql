@@ -1,6 +1,5 @@
 package com.thirtytwonineteen.graql
 
-import io.micronaut.context.annotation.Prototype
 import jakarta.inject.Qualifier
 import jakarta.inject.Singleton
 
@@ -42,7 +41,7 @@ annotation class GraQLMutation(val name:String = "", val input:String = "")
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 @Singleton
-annotation class GraQLMappedBatchFetch(val dataLoaderName:String = "", val type:String="", val field:String="")
+annotation class GraQLBatchFetch(val dataLoaderName:String = "", val type:String="", val field:String="")
 
 @Qualifier
 @Target(AnnotationTarget.FUNCTION)

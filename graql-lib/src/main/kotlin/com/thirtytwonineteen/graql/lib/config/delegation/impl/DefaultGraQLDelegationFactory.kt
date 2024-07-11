@@ -14,7 +14,7 @@ open class DefaultGraQLDelegationFactory(
     @Named("graQLMutationConfigurator") private val mutationConfigurator: GraQLDelegationConfigurator<GraQLMutation>,
     @Named("graQLDataLoaderConfigurator") private val dataLoaderConfigurator: GraQLDelegationConfigurator<GraQLDataLoader>,
     @Named("graQLMappedDataLoaderConfigurator") private val mappedDataLoaderConfigurator: GraQLDelegationConfigurator<GraQLMappedDataLoader>,
-    @Named("graQLMappedBatchFetchConfigurator") private val mappedBatchFetchConfigurator: GraQLDelegationConfigurator<GraQLMappedBatchFetch>,
+    @Named("graQLBatchFetchConfigurator") private val mappedBatchFetchConfigurator: GraQLDelegationConfigurator<GraQLBatchFetch>,
 ) : GraQLDelegationFactory {
 
     override val delegateConfigurators = mapOf(
@@ -23,7 +23,7 @@ open class DefaultGraQLDelegationFactory(
         GraQLMutation::class to mutationConfigurator,
         GraQLDataLoader::class to dataLoaderConfigurator,
         GraQLMappedDataLoader::class to mappedDataLoaderConfigurator,
-        GraQLMappedBatchFetch::class to mappedBatchFetchConfigurator,
+        GraQLBatchFetch::class to mappedBatchFetchConfigurator,
     )
 
 }
