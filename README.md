@@ -1,6 +1,7 @@
 # graQL _(gra · kl)_ 
 
-A stab at near-zero-boilerplate GraphQL configuration for [micronaut®](https://micronaut.io/). 
+A stab at near-zero-boilerplate GraphQL configuration for [micronaut®](https://micronaut.io/)'s existing GraphQL
+integration.
 
 # Purpose
 
@@ -76,7 +77,9 @@ class BookController( val bookService:BookService ) {
     }
 }
 ```
-That's it. On startup, GraQL will scan for all `GraQLComponent` and do its thing.
+That's it. On startup, GraQL will scan for all `GraQLComponent` and do its thing. Because it leverages [Micronaut
+GraphQL Integration](https://micronaut-projects.github.io/micronaut-graphql/4.4.0/guide/), all of the existing 
+configuration it provides (like `/graphql` and `/graphiql`) is as normal!
 
 # Actual Documentation
 
