@@ -32,11 +32,12 @@ class ToDoGraQLController(
 
     /* Naive
     @GraQLFetch
-    */
     fun author(toDo: ToDo): Author {
         return toDoService.findAuthorById(toDo.authorId)
     }
+    */
 
+    /* Better, but two methods and dealing with DataFetchingEnvironment */
     @GraQLFetch
     fun author(toDo: ToDo, dfe:DataFetchingEnvironment): CompletableFuture<Any> {
         return dfe.getDataLoader<Any, Any>("authorDataLoader")!!.load(toDo)
@@ -54,19 +55,26 @@ class ToDoGraQLController(
         }
     }
 
-    /*
-    @GraQLMappedDataLoader
-    fun authorDataLoader( ids:Collection<Long> ): Map<Long, Author> {
-        LOG.info("authorDataLoader for $ids")
+    /* Good, like Spring BatchMapping with BatchLoader
+    @GraQLMappedBatchFetch
+    fun author( toDos:Collection<ToDo> ): List<Author> {
+        return toDoService.findAuthorsByIdIn( toDos.map{it.authorId} )
+    }
 
-        return toDoService
-            .findAuthorsByIdIn( ids.toList() )
-            .associateBy{ it.id!! }
+     */
+
+    /* Good, like Spring BatchMapping with MappedBatchLoader
+    @GraQLMappedBatchFetch
+    fun author( toDos:Collection<ToDo> ): Map<ToDo, Author> {
+        val authorsById = toDoService
+            .findAuthorsByIdIn( toDos.map{it.authorId} )
+            .associateBy{ it.id }
+
+        return toDos.fold( mutableMapOf() ) { acc, it ->
+            acc.put( it, authorsById[it.authorId]!! )
+            acc
+        }
     }
     */
-
-    companion object {
-        private val LOG = LoggerFactory.getLogger(ToDoGraQLController::class.java)
-    }
 
 }

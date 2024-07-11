@@ -72,6 +72,9 @@ class GraQLFactory {
     ): DataLoaderRegistry {
         val dataLoaderRegistry = DataLoaderRegistry()
 
+        graQL.batchLoaders.forEach{
+            dataLoaderRegistry.register( it.dataLoaderName, DataLoader.newDataLoader(it) )
+        }
         graQL.mappedBatchLoaders.forEach{
             dataLoaderRegistry.register( it.dataLoaderName, DataLoader.newMappedDataLoader(it) )
         }

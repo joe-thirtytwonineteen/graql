@@ -34,4 +34,18 @@ annotation class GraQLMutation(val name:String = "", val input:String = "")
 @Retention(AnnotationRetention.RUNTIME)
 @Repeatable
 @Singleton
+annotation class GraQLMappedBatchFetch(val dataLoaderName:String = "", val type:String="", val field:String="")
+
+@Qualifier
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@Repeatable
+@Singleton
+annotation class GraQLDataLoader(val name:String = "")
+
+@Qualifier
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@Repeatable
+@Singleton
 annotation class GraQLMappedDataLoader(val name:String = "")

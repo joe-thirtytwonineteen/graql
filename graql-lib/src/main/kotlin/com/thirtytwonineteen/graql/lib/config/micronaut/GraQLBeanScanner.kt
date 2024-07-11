@@ -7,7 +7,6 @@ import io.micronaut.context.annotation.Context
 import io.micronaut.inject.BeanDefinition
 import io.micronaut.inject.qualifiers.Qualifiers
 import java.lang.reflect.Method
-import kotlin.reflect.KClass
 
 @Context
 class GraQLBeanScanner(
@@ -19,7 +18,7 @@ class GraQLBeanScanner(
         beanContext.getBeanDefinitions(Qualifiers.byStereotype(GraQLComponent::class.java))
     }
 
-    fun <T> delegatesForAnnotation(clazz: Class<*> ):List<T>{
+    fun <T> delegatesForType(clazz: Class<*> ):List<T>{
         return delegatesByType.find( clazz )
     }
 

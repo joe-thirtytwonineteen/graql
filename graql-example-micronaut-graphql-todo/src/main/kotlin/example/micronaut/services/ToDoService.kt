@@ -57,7 +57,7 @@ class ToDoService(
         return CompleteToDoResponse( req.id )
     }
 
-    fun findAuthorsByIdIn(ids: List<Long>) : Collection<Author> {
+    fun findAuthorsByIdIn(ids: List<Long>) : List<Author> {
         // Authorization
         // None
 
