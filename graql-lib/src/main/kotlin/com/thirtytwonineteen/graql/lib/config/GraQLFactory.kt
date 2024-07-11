@@ -1,9 +1,13 @@
 package com.thirtytwonineteen.graql.lib.config
 
+import com.apollographql.federation.graphqljava.Federation
 import com.thirtytwonineteen.graql.GraQL
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphQL
 import graphql.execution.preparsed.PreparsedDocumentProvider
+import graphql.schema.DataFetcher
+import graphql.schema.GraphQLSchema
+import graphql.schema.TypeResolver
 import graphql.schema.idl.RuntimeWiring
 import graphql.schema.idl.SchemaGenerator
 import graphql.schema.idl.SchemaParser
@@ -18,6 +22,7 @@ import org.dataloader.DataLoaderRegistry
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
+
 @Factory
 class GraQLFactory {
 
@@ -28,6 +33,8 @@ class GraQLFactory {
         graQLConfigurationProperties: GraQLConfigurationProperties,
         graQLRuntimeWirer: GraQLRuntimeWirer,
         graQLGlobalExceptionHandler: GraQLGlobalExceptionHandler,
+        graQLFederationDataFetcher: DataFetcher<*>,
+        graQLFederationTypeResolver: TypeResolver
     ): GraphQL? {
         val schemaParser = SchemaParser() // <2>
 
@@ -47,8 +54,13 @@ class GraQLFactory {
                 .build()
 
 
-            val schemaGenerator = SchemaGenerator()
-            val graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring)
+            // val schemaGenerator = SchemaGenerator()
+            // val graphQLSchema = schemaGenerator.makeExecutableSchema(typeRegistry, runtimeWiring)
+
+            val graphQLSchema = Federation.transform(typeRegistry, runtimeWiring)
+                .fetchEntities(graQLFederationDataFetcher)
+                .resolveEntityType(graQLFederationTypeResolver)
+                .build()
 
             val builder = GraphQL.newGraphQL(graphQLSchema)
                 .defaultDataFetcherExceptionHandler(graQLGlobalExceptionHandler)
@@ -56,6 +68,7 @@ class GraQLFactory {
             if ( beanContext.containsBean( PreparsedDocumentProvider::class.java ) ) {
                 builder.preparsedDocumentProvider( beanContext.getBean( PreparsedDocumentProvider::class.java ) )
             }
+
 
             builder.build()
         } else {

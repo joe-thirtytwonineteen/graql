@@ -30,6 +30,7 @@ import org.junit.jupiter.api.Assertions.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+
 @MicronautTest // <1>
 internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpClient):AnnotationSpec() { // <2>
 

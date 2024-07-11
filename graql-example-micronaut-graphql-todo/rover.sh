@@ -1,0 +1,1 @@
+rover dev --name todo --schema ./src/main/resources/schema.graphqls --url http://localhost:8080/graphql

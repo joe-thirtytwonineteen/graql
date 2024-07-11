@@ -29,10 +29,7 @@ type CompleteToDoResponse {
 }
 
 
-"""
-@key(fields: "id")
-"""
-type ToDo { # <4>
+type ToDo @key(fields: "id") { # <4>
     id: ID!
     title: String!
     completed: Boolean!
