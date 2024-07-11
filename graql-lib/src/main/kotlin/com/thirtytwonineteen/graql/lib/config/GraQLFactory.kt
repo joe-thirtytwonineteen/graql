@@ -1,6 +1,7 @@
 package com.thirtytwonineteen.graql.lib.config
 
 import com.thirtytwonineteen.graql.GraQL
+import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import graphql.GraphQL
 import graphql.schema.GraphQLSchema
 import graphql.schema.idl.RuntimeWiring
@@ -12,26 +13,21 @@ import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires
 import io.micronaut.core.io.ResourceResolver
 import io.micronaut.runtime.http.scope.RequestScope
-import jakarta.inject.Named
 import jakarta.inject.Singleton
 import org.dataloader.DataLoader
 import org.dataloader.DataLoaderRegistry
-import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.io.InputStreamReader
 
 @Factory
 class GraQLFactory {
 
-    companion object {
-        private val LOG = LoggerFactory.getLogger(GraQLFactory::class.java)
-    }
-
     @Singleton
     fun graphQL(
         resourceResolver: ResourceResolver,
         graQLConfigurationProperties: GraQLConfigurationProperties,
-        graQLRuntimeWirer: GraQLRuntimeWirer
+        graQLRuntimeWirer: GraQLRuntimeWirer,
+        graQLGlobalExceptionHandler: GraQLGlobalExceptionHandler,
     ): GraphQL? {
         val schemaParser = SchemaParser() // <2>
 
@@ -56,6 +52,7 @@ class GraQLFactory {
 
             GraphQL
                 .newGraphQL(graphQLSchema)
+                .defaultDataFetcherExceptionHandler(graQLGlobalExceptionHandler)
                 .build()
 
         } else {

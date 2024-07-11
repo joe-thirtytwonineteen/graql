@@ -1,5 +1,6 @@
 package com.thirtytwonineteen.graql
 
+import io.micronaut.context.annotation.Prototype
 import jakarta.inject.Qualifier
 import jakarta.inject.Singleton
 
@@ -56,3 +57,10 @@ annotation class GraQLDataLoader(val name:String = "")
 @Repeatable
 @Singleton
 annotation class GraQLMappedDataLoader(val name:String = "")
+
+@Qualifier
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.RUNTIME)
+@Repeatable
+annotation class GraQLExceptionHandler
+

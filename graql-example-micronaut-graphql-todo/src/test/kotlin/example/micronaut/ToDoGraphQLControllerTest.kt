@@ -86,9 +86,25 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         assertNotNull( todo["dateCompleted"] )
         val dateCompleted = LocalDateTime.parse(todo["dateCompleted"].toString(), DateTimeFormatter.ISO_DATE_TIME)
         assertTrue(dateCompleted >= now)
+
+        // when:
+        val res = createToDoRequest( "nope", "nyet" )
+
+        // then:
+        assertNull( res.get("id") )
+        assertTrue( res.get("errors") is List<*>)
+        val errors = res.get("errors") as List<LinkedHashMap<String, Any>>
+        assertTrue( errors.size == 1)
+        val error = errors[0] as Map<String, Any>
+        val ext = error.get("extensions") as Map<String, Any>
+        assertTrue(ext.keys.first().startsWith("createToDo.req.toDo"))
+
+
+        // TODO: add exception handling and check the message!
+
     }
 
-    private fun fetch(query: String): HttpResponse<Map<String, Any>> {
+    private fun fetch(query: String, allowErrors: Boolean = false): HttpResponse<Map<String, Any>> {
         val request: HttpRequest<String> = HttpRequest.POST("/graphql", query)
         val response = client.toBlocking().exchange(
             request, Argument.mapOf(Argument.STRING, Argument.OBJECT_ARGUMENT)
@@ -100,15 +116,15 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
 
         // ...let's check the actual response.
         val body = response.body() as Map<*, *>
-        if ( body.containsKey("errors") ) {
+        if ( body.containsKey("errors") && !allowErrors ) {
             throw Exception(body.get("errors").toString())
         }
 
         return response
     }
 
-    private fun fetch(query:String, key:String):Map<*,*> {
-        val response = fetch( query )
+    private fun fetch(query:String, key:String, allowErrors: Boolean = false):Map<*,*> {
+        val response = fetch( query, allowErrors )
 
         val body = response.body() as Map<*, *>
         if ( !body.containsKey("data") ) {
@@ -120,10 +136,19 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         if ( !data.containsKey( key ) ) {
             throw IllegalArgumentException("Response did not contain key ${key}")
         }
-        if ( data[key] == null ) {
+        if ( data[key] == null && !allowErrors ) {
             throw IllegalArgumentException("Response data key ${key} was null")
         }
-        return data[key] as Map<*,*>
+
+        var res:Map<*,*>? = null
+
+        if ( data[key] != null ) {
+            res = data.get(key) as Map<*, *>
+        } else {
+            res = body
+        }
+
+        return res
     }
 
     private val allTodos: List<Map<String, Any>>
@@ -131,25 +156,32 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
             return query("toDos", "title, completed, dateCompleted, author { id, username }")
         }
 
-    private fun createToDo(title: String, author: String): Long {
-        val response = mutate(
+    private fun createToDoRequest(title: String, author: String): Map<*,*> {
+        val res = mutate(
             "createToDo",
             mapOf(
                 "toDo" to mapOf(
                     "title" to title,
-                    "author" to author
+                    "author" to author,
+                    "dueDate" to LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME)
                 ),
             ),
-            listOf("id")
+            listOf("id"),
+            true
         )
-        return response["id"].toString().toLong()
+
+        return res
+    }
+
+    private fun createToDo(title: String, author: String): Long {
+        return createToDoRequest(title, author).get("id").toString().toLong()
     }
 
     private fun markAsCompleted(id: Long): Boolean {
         return mutate("completeToDo", mapOf("id" to id), listOf("completed"))["completed"] as Boolean
     }
 
-    private fun mutate(name:String, request: Map<Any, Any>, outs:List<String>):Map<*, *> {
+    private fun mutate(name:String, request: Map<Any, Any>, outs:List<String>, allowErrors: Boolean = false):Map<*, *> {
         val query = toQuery("""
             mutation { 
                 $name(
@@ -161,11 +193,15 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
             }
         """)
 
-        val res = fetch( query, name )
+        val res = fetch( query, name, allowErrors )
 
-        return outs.fold(mutableMapOf<Any, Any?>()) { acc, it ->
-            acc.put( it, res.get(it) )
-            return acc
+        if ( allowErrors && res.containsKey("errors") ) {
+            return res
+        } else {
+            return outs.fold(mutableMapOf<Any, Any?>()) { acc, it ->
+                acc.put( it, res.get(it) )
+                return acc
+            }
         }
     }
 
