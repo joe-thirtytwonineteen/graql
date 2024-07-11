@@ -26,9 +26,9 @@ import io.micronaut.http.client.annotation.Client
 import io.micronaut.test.extensions.kotest5.annotation.MicronautTest
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Assertions.assertFalse
+import org.junit.jupiter.api.Assertions.*
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @MicronautTest // <1>
 internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpClient):AnnotationSpec() { // <2>
@@ -36,6 +36,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
     @Test
     fun testGraphQLController() {
         // when:
+        val now = LocalDateTime.now()
         var todos = allTodos
 
         // then:
@@ -56,6 +57,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
         assertEquals(2, todos.size)
         var todo = todos[0]
         assertEquals("Test GraphQL", todo["title"])
+        assertNull( todo["dateCompleted"] )
         assertFalse(java.lang.Boolean.parseBoolean(todo["completed"].toString()))
         assertEquals(
             "Tim Yates",
@@ -80,6 +82,10 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
             "Tim Yates",
             (todo["author"] as Map<*, *>?)!!["username"]
         )
+
+        assertNotNull( todo["dateCompleted"] )
+        val dateCompleted = LocalDateTime.parse(todo["dateCompleted"].toString(), DateTimeFormatter.ISO_DATE_TIME)
+        assertTrue(dateCompleted >= now)
     }
 
     private fun fetch(query: String): HttpResponse<Map<String, Any>> {
@@ -122,7 +128,7 @@ internal class ToDoGraphQLControllerTest(@Inject @Client("/") val client: HttpCl
 
     private val allTodos: List<Map<String, Any>>
         get() {
-            return query("toDos", "title, completed, author { id, username }")
+            return query("toDos", "title, completed, dateCompleted, author { id, username }")
         }
 
     private fun createToDo(title: String, author: String): Long {

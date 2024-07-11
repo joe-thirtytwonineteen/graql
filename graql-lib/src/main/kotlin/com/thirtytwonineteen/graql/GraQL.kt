@@ -3,12 +3,17 @@ package com.thirtytwonineteen.graql
 import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLBeanScanner
 import com.thirtytwonineteen.graql.lib.fetcher.*
 import com.thirtytwonineteen.graql.lib.loader.*
+import graphql.schema.GraphQLScalarType
 import jakarta.inject.Singleton
 
 @Singleton
 class GraQL(
     private val graQLBeanScanner: GraQLBeanScanner
 ) {
+
+    val scalars:Set<GraphQLScalarType> get() {
+        return graQLBeanScanner.graQLScalars
+    }
 
     val queries:List<GraQLDelegatingQuery<Any>> get() {
         return graQLBeanScanner.delegatesForType(GraQLDelegatingQuery::class.java)

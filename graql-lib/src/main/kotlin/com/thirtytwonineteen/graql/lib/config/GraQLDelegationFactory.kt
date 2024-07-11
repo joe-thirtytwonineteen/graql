@@ -5,6 +5,7 @@ import com.thirtytwonineteen.graql.lib.config.micronaut.GraQLDelegationException
 import com.thirtytwonineteen.graql.lib.fetcher.*
 import com.thirtytwonineteen.graql.lib.loader.DefaultGraQLDelegatingBatchLoader
 import com.thirtytwonineteen.graql.lib.loader.DefaultGraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.mapping.GraQLRequestParameterMapper
 import io.micronaut.context.BeanContext
 import io.micronaut.inject.BeanDefinition
 import io.micronaut.scheduling.TaskExecutors
@@ -76,7 +77,8 @@ class DefaultGraQLFetchConfigurator(
 
 @Singleton @Named("graQLQueryConfigurator")
 class DefaultGraQLQueryConfigurator(
-    private val beanContext:BeanContext
+    private val beanContext:BeanContext,
+    private val parameterMapper: GraQLRequestParameterMapper,
 ) : GraQLDelegationConfigurator<GraQLQuery> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
         val annotation = a as GraQLQuery
@@ -96,14 +98,16 @@ class DefaultGraQLQueryConfigurator(
                 annotation.input.isBlank() -> requestParameter.name
                 else -> annotation.input
             },
-            requestType = requestParameter.type
+            requestType = requestParameter.type,
+            requestParameterMapper = parameterMapper
         ))
     }
 }
 
 @Singleton @Named("graQLMutationConfigurator")
 class DefaultGraQLMutationConfigurator(
-    private val beanContext:BeanContext
+    private val beanContext:BeanContext,
+    private val parameterMapper: GraQLRequestParameterMapper,
 ) : GraQLDelegationConfigurator<GraQLMutation> {
     override fun createDelegate(beanDefinition: BeanDefinition<*>, method: Method, a: Annotation): List<GraQLDelegate> {
         val annotation = a as GraQLMutation
@@ -124,6 +128,7 @@ class DefaultGraQLMutationConfigurator(
                 else -> annotation.input
             },
             requestType = requestParameter.type,
+            requestParameterMapper = parameterMapper
         ))
     }
 }

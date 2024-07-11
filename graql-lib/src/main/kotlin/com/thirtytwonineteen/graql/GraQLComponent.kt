@@ -8,6 +8,13 @@ interface GraQLDelegate
 @Qualifier
 @Target(AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.RUNTIME)
+@Repeatable
+@Singleton
+annotation class GraQLScalar(val name:String = "", val description:String = "")
+
+@Qualifier
+@Target(AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.RUNTIME)
 @Singleton
 annotation class GraQLComponent()
 

@@ -19,6 +19,7 @@ import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.GeneratedValue.Type.AUTO
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
+import java.time.LocalDateTime
 
 @MappedEntity // <1>
 class ToDo(var title: String, val authorId: Long) {
@@ -28,5 +29,6 @@ class ToDo(var title: String, val authorId: Long) {
     var id: Long? = null
 
     var completed = false
+    var dateCompleted: LocalDateTime? = null
 
 }
