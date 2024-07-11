@@ -22,6 +22,11 @@ open class GraQLRuntimeWirer(
 ) {
 
     fun wire( builder: RuntimeWiring.Builder): RuntimeWiring.Builder {
+
+        graQL.scalars.forEach {
+            builder.scalar( it )
+        }
+
         builder
             .type("Query") { typeWiring: TypeRuntimeWiring.Builder ->  // <3>
                 graQL.queries.forEach {

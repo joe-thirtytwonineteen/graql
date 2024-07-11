@@ -6,6 +6,7 @@ import example.micronaut.persistence.AuthorRepository
 import example.micronaut.persistence.ToDoRepository
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.time.LocalDateTime
 
 @Singleton
 class ToDoService(
@@ -52,6 +53,7 @@ class ToDoService(
         // Operation
         val toDo = findToDoById( req.id )
         toDo.completed = true
+        toDo.dateCompleted = LocalDateTime.now()
         toDoRepository.update(toDo)
 
         return CompleteToDoResponse( req.id )

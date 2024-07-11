@@ -1,3 +1,5 @@
+scalar DateTime
+
 type Query {
     toDos: [ToDo!]! # <1>
 }
@@ -33,6 +35,7 @@ type ToDo { # <4>
     id: ID!
     title: String!
     completed: Boolean!
+    dateCompleted: DateTime
     author: Author!
 }
 

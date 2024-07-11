@@ -2,6 +2,8 @@ package com.thirtytwonineteen.graql.lib.config.micronaut
 
 import com.thirtytwonineteen.graql.*
 import com.thirtytwonineteen.graql.lib.config.GraQLDelegationFactory
+import graphql.schema.Coercing
+import graphql.schema.GraphQLScalarType
 import io.micronaut.context.BeanContext
 import io.micronaut.context.annotation.Context
 import io.micronaut.inject.BeanDefinition
@@ -13,6 +15,32 @@ class GraQLBeanScanner(
     private val beanContext: BeanContext,
     private val delegationFactory: GraQLDelegationFactory,
 ) {
+
+    val graQLScalars:Set<GraphQLScalarType> by lazy {
+        beanContext
+            .getBeanDefinitions(Qualifiers.byStereotype(GraQLScalar::class.java))
+            .fold( mutableSetOf() ) { acc, it ->
+                val bean = beanContext.getBean(it)
+                if ( !Coercing::class.java.isAssignableFrom( bean::class.java ) ) {
+                    throw RuntimeException("Bean ${it.name} isn't a GraphQL Coercing: it can't be registered as a scalar!")
+                }
+                val annotation = bean::class.java.annotations.find{ it is GraQLScalar } as GraQLScalar
+
+                val scalar = GraphQLScalarType.newScalar()
+                    .name(
+                        when {
+                            annotation.name.isBlank() -> bean::class.simpleName
+                            else -> annotation.name
+                        }
+                    )
+                    .description( annotation.description )
+                    .coercing( bean as Coercing<*,*>)
+                    .build()
+
+                acc.add( scalar )
+                acc
+            }
+    }
 
     val componentDefinitions:Collection<BeanDefinition<*>> by lazy {
         beanContext.getBeanDefinitions(Qualifiers.byStereotype(GraQLComponent::class.java))

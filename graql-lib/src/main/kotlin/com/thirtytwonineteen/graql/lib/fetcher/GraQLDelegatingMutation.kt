@@ -1,7 +1,7 @@
 package com.thirtytwonineteen.graql.lib.fetcher
 
-import com.google.gson.Gson
 import com.thirtytwonineteen.graql.GraQLDelegate
+import com.thirtytwonineteen.graql.lib.mapping.GraQLRequestParameterMapper
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
 import java.lang.reflect.Method
@@ -18,6 +18,7 @@ class DefaultGraQLDelegatingMutation(
     override val name:String,
     override val argumentName: String,
     override val requestType: Class<*>,
+    val requestParameterMapper: GraQLRequestParameterMapper,
     val method: Method,
     val target: Any,
 ):GraQLDelegatingMutation<Any> {
@@ -26,7 +27,7 @@ class DefaultGraQLDelegatingMutation(
 
         val req = when {
             arg == null -> null
-            else -> Gson().fromJson(Gson().toJson(arg), requestType)
+            else -> requestParameterMapper.map( arg, requestType )
         }
         val res = method.invoke( target, req )
         return res
