@@ -4,6 +4,7 @@ import com.thirtytwonineteen.graql.GraQLDelegate
 import com.thirtytwonineteen.graql.lib.mapping.GraQLRequestParameterMapper
 import graphql.schema.DataFetcher
 import graphql.schema.DataFetchingEnvironment
+import java.lang.reflect.InvocationTargetException
 import java.lang.reflect.Method
 
 interface GraQLDelegatingMutation<T>:DataFetcher<T>, GraQLDelegate {
@@ -29,7 +30,14 @@ class DefaultGraQLDelegatingMutation(
             arg == null -> null
             else -> requestParameterMapper.map( arg, requestType )
         }
-        val res = method.invoke( target, req )
+
+        var res:Any? = null
+        try {
+            res = method.invoke( target, req )
+        } catch (e: Exception) {
+            throw(e)
+        }
+
         return res
     }
 }

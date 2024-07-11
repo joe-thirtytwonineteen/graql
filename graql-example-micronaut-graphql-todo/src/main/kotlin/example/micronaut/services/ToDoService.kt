@@ -4,17 +4,21 @@ import example.micronaut.domain.Author
 import example.micronaut.domain.ToDo
 import example.micronaut.persistence.AuthorRepository
 import example.micronaut.persistence.ToDoRepository
+import io.micronaut.core.annotation.Introspected
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import jakarta.validation.Valid
+import jakarta.validation.constraints.Min
+import jakarta.validation.constraints.Size
 import java.time.LocalDateTime
 
 @Singleton
-class ToDoService(
+open class ToDoService(
     @Inject private val toDoRepository: ToDoRepository,
     @Inject private val authorRepository: AuthorRepository,
 ) {
 
-    fun createToDo(req: CreateToDoRequest): CreateToDoResponse {
+    open fun createToDo(@Valid req: CreateToDoRequest): CreateToDoResponse {
         // Authorization
         // None
 
@@ -82,6 +86,13 @@ class FindToDosRequest() {
 }
 data class CompleteToDoRequest( val id: Long )
 data class CompleteToDoResponse( val id: Long, val completed:Boolean = true )
-data class CreateToDoRequest(val toDo: ToDoDTO)
-data class ToDoDTO(val title: String, val author:String)
+@Introspected
+data class CreateToDoRequest(@Valid val toDo: ToDoDTO)
+
+@Introspected
+data class ToDoDTO(
+    @field:Size(min = 5) val title: String,
+    val author:String
+)
+
 data class CreateToDoResponse( val id: Long, val authorId: Long )
