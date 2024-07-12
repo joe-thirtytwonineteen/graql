@@ -1,20 +1,19 @@
 package com.thirtytwonineteen.graql.lib.delegates.impl
 
-import com.thirtytwonineteen.graql.lib.delegates.GraQLDelegatingMappedBatchLoader
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
-import org.slf4j.LoggerFactory
+import org.dataloader.MappedBatchLoader
 import java.lang.reflect.Method
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ExecutorService
 
-class DefaultGraQLDelegatingMappedBatchLoader(
-    override val dataLoaderName:String,
+class DefaultGraQLMappedBatchLoader(
+    val dataLoaderName:String,
     val method: Method,
     val target: Any,
     val executor: ExecutorService,
     exceptionHandler: GraQLGlobalExceptionHandler,
-): GraQLDelegatingMappedBatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
+): MappedBatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
 
     override fun load(keys: MutableSet<Any>): CompletionStage<Map<Any, Any>> =
         CompletableFuture.supplyAsync({
@@ -29,7 +28,7 @@ class DefaultGraQLDelegatingMappedBatchLoader(
 
                     candidate
                 },
-                {"Error delegating to ${target::class.simpleName}::${method.name}: your client should get an error message. Exception is logged."}
+                { "Error delegating to ${target::class.simpleName}::${method.name}: your client should get an error message. Exception is logged." }
             ) as Map<Any, Any>
 
             res

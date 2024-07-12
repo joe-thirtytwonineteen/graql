@@ -4,7 +4,7 @@ import com.thirtytwonineteen.graql.GraQLDelegate
 import com.thirtytwonineteen.graql.GraQLMappedDataLoader
 import com.thirtytwonineteen.graql.lib.config.delegation.GraQLDelegationConfigurator
 import com.thirtytwonineteen.graql.lib.config.GraQLDelegationException
-import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLMappedBatchLoaderFactory
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import io.micronaut.context.BeanContext
 import io.micronaut.inject.BeanDefinition
@@ -28,7 +28,7 @@ class DefaultGraQLMappedDataLoaderConfigurator(
         }
 
         return listOf(
-            DefaultGraQLDelegatingMappedBatchLoader(
+            DefaultGraQLMappedBatchLoaderFactory(
                 exceptionHandler = exceptionHandler,
                 dataLoaderName = when {
                     annotation.name.isBlank() -> method.name

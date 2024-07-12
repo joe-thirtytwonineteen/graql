@@ -3,7 +3,8 @@ package com.thirtytwonineteen.graql.lib.delegates
 import com.thirtytwonineteen.graql.GraQLDelegate
 import org.dataloader.MappedBatchLoader
 
-interface GraQLDelegatingMappedBatchLoader<K, V>:MappedBatchLoader<K, V>, GraQLDelegate {
+interface GraQLMappedBatchLoaderFactory<K, V>: GraQLDelegate {
+    fun createLoader():MappedBatchLoader<K, V>
     val dataLoaderName:String
 }
 

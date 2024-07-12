@@ -5,8 +5,8 @@ import com.thirtytwonineteen.graql.GraQLBatchFetch
 import com.thirtytwonineteen.graql.lib.config.delegation.GraQLDelegationConfigurator
 import com.thirtytwonineteen.graql.lib.config.GraQLDelegationException
 import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLDataLoaderFetch
-import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLDelegatingBatchLoader
-import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLBatchLoaderFactory
+import com.thirtytwonineteen.graql.lib.delegates.impl.DefaultGraQLMappedBatchLoaderFactory
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
 import io.micronaut.context.BeanContext
 import io.micronaut.inject.BeanDefinition
@@ -80,14 +80,14 @@ class DefaultGraQLBatchFetchConfigurator(
 
         // a conventionally-named data loader that actually invokes this method...
         val loader = when {
-            useMappedLoader -> DefaultGraQLDelegatingMappedBatchLoader(
+            useMappedLoader -> DefaultGraQLMappedBatchLoaderFactory(
                 exceptionHandler = exceptionHandler,
                 dataLoaderName = dataLoaderName,
                 method = method,
                 target = beanContext.getBean(beanDefinition),
                 executor = defaultExecutor,
             )
-            else -> DefaultGraQLDelegatingBatchLoader(
+            else -> DefaultGraQLBatchLoaderFactory(
                 exceptionHandler = exceptionHandler,
                 dataLoaderName = dataLoaderName,
                 method = method,
