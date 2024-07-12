@@ -26,11 +26,11 @@ class GraQL(
         return graQLComponentScanner.delegatesForType(GraQLDelegatingFetch::class.java)
     }
 
-    val batchLoaders:List<GraQLDelegatingBatchLoader<Any, Any>> get() {
-        return graQLComponentScanner.delegatesForType(GraQLDelegatingBatchLoader::class.java)
+    val batchLoaders:List<GraQLBatchLoaderFactory<Any, Any>> get() {
+        return graQLComponentScanner.delegatesForType(GraQLBatchLoaderFactory::class.java)
     }
 
-    val mappedBatchLoaders:List<GraQLDelegatingMappedBatchLoader<Any, Any>> get() {
-        return graQLComponentScanner.delegatesForType(GraQLDelegatingMappedBatchLoader::class.java)
+    val mappedBatchLoaders:List<GraQLMappedBatchLoaderFactory<Any, Any>> get() {
+        return graQLComponentScanner.delegatesForType(GraQLMappedBatchLoaderFactory::class.java)
     }
 }

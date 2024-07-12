@@ -1,20 +1,39 @@
 package com.thirtytwonineteen.graql.lib.delegates.impl
 
-import com.thirtytwonineteen.graql.lib.delegates.GraQLDelegatingMappedBatchLoader
+import com.thirtytwonineteen.graql.lib.delegates.GraQLMappedBatchLoaderFactory
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
-import org.slf4j.LoggerFactory
+import org.dataloader.MappedBatchLoader
 import java.lang.reflect.Method
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ExecutorService
 
-class DefaultGraQLDelegatingMappedBatchLoader(
+class DefaultGraQLMappedBatchLoaderFactory(
     override val dataLoaderName:String,
     val method: Method,
     val target: Any,
     val executor: ExecutorService,
+    val exceptionHandler: GraQLGlobalExceptionHandler,
+): GraQLMappedBatchLoaderFactory<Any, Any> {
+
+    override fun createLoader(): MappedBatchLoader<Any, Any> {
+        return DefaultGraQLMappedBatchLoader(
+            dataLoaderName,
+            method,
+            target,
+            executor,
+            exceptionHandler
+        )
+    }
+}
+
+class DefaultGraQLMappedBatchLoader(
+    val dataLoaderName:String,
+    val method: Method,
+    val target: Any,
+    val executor: ExecutorService,
     exceptionHandler: GraQLGlobalExceptionHandler,
-): GraQLDelegatingMappedBatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
+): MappedBatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
 
     override fun load(keys: MutableSet<Any>): CompletionStage<Map<Any, Any>> =
         CompletableFuture.supplyAsync({

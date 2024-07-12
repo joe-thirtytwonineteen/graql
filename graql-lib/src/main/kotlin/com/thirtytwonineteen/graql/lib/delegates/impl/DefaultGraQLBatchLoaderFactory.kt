@@ -1,20 +1,38 @@
 package com.thirtytwonineteen.graql.lib.delegates.impl
 
-import com.thirtytwonineteen.graql.lib.delegates.GraQLDelegatingBatchLoader
+import com.thirtytwonineteen.graql.lib.delegates.GraQLBatchLoaderFactory
 import com.thirtytwonineteen.graql.lib.exceptions.GraQLGlobalExceptionHandler
-import org.slf4j.LoggerFactory
+import org.dataloader.BatchLoader
 import java.lang.reflect.Method
 import java.util.concurrent.CompletableFuture
 import java.util.concurrent.CompletionStage
 import java.util.concurrent.ExecutorService
 
-class DefaultGraQLDelegatingBatchLoader(
+class DefaultGraQLBatchLoaderFactory(
     override val dataLoaderName:String,
     val method: Method,
     val target: Any,
     val executor: ExecutorService,
+    val exceptionHandler: GraQLGlobalExceptionHandler,
+): GraQLBatchLoaderFactory<Any, Any> {
+    override fun createLoader():BatchLoader<Any, Any> {
+        return DefaultGraQLBatchLoader(
+            dataLoaderName,
+            method,
+            target,
+            executor,
+            exceptionHandler
+        )
+    }
+}
+
+class DefaultGraQLBatchLoader(
+    val dataLoaderName:String,
+    val method: Method,
+    val target: Any,
+    val executor: ExecutorService,
     exceptionHandler: GraQLGlobalExceptionHandler,
-): GraQLDelegatingBatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
+): BatchLoader<Any, Any>, AbstractGraQLDelegate(exceptionHandler) {
 
     override fun load(keys: List<Any>): CompletionStage<List<Any>> =
         CompletableFuture.supplyAsync({
@@ -35,3 +53,4 @@ class DefaultGraQLDelegatingBatchLoader(
             list
         }, executor)
 }
+
