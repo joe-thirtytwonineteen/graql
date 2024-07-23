@@ -71,7 +71,7 @@ class GraphQLTestHelper(
 
         return outs.fold(mutableMapOf<Any, Any?>()) { acc, it ->
             acc.put( it, res.get(it) )
-            return acc
+            acc
         }
     }
 

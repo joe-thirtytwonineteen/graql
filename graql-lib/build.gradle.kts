@@ -1,6 +1,9 @@
 val kotlinVersion=project.properties.get("kotlinVersion")
 
 plugins {
+    id("org.jetbrains.kotlin.jvm") version "1.9.23"
+    id("org.jetbrains.kotlin.plugin.allopen") version "1.9.23"
+    id("com.google.devtools.ksp") version "1.9.23-1.0.19"
     id("io.micronaut.application") version "4.4.0"
     id("io.micronaut.aot") version "4.4.0"
 }

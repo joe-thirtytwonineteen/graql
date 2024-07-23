@@ -156,7 +156,7 @@ class GraQLTest(
         
         When("we look up a GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "things"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "things"}.first().createLoader()
 
 
             val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)
@@ -179,7 +179,7 @@ class GraQLTest(
 
         When("we look up a named GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "otherThings"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "otherThings"}.first().createLoader()
 
 
             val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)
@@ -202,7 +202,7 @@ class GraQLTest(
 
         When("we look up a named-via-repetition GraQL mapped data loader delegate and run it") {
             val fixtureComponent = beanContext.getBean(GraQLFixtureComponent::class.java)
-            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "yetMoreThings"}.first()
+            val delegate = graQL.mappedBatchLoaders.filter{ it.dataLoaderName == "yetMoreThings"}.first().createLoader()
 
 
             val stage = delegate.load(mutableSetOf(1, 2, 3, 4) as MutableSet<Any>)

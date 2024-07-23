@@ -7,7 +7,7 @@ import example.micronaut.filter.ExamplePropagationContext
 import example.micronaut.filter.ExampleRequestFilter
 import example.micronaut.filter.RequestInfo
 import example.micronaut.services.*
-import graphql.schema.DataFetchingEnvironment
+// import graphql.schema.DataFetchingEnvironment
 import io.micronaut.core.propagation.PropagatedContext
 import org.slf4j.LoggerFactory
 import java.util.concurrent.CompletableFuture
@@ -107,5 +107,15 @@ class ToDoGraQLController(
         /* Enough about that: return our authors */
         return authors
     }
+
+    /*
+    Also good, like Spring BatchMapping with BatchLoader (List, not Map),
+    but this will fail if toDo.author is nullable and any are missing!
+    @GraQLBatchFetch
+    fun author( toDos:Collection<ToDo> ): List<Author> {
+        // Find all of our authors, at once, by ID
+        return toDoService.findAuthorsByIdIn( toDos.map{it.authorId} )
+    }
+    */
 
 }
