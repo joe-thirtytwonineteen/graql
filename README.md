@@ -7,6 +7,10 @@ integration.
 
 Take a stab at bringing the easy configuration of Spring GraphQL and Netflix DGS to Micronaut. 
 
+# Documentation
+
+
+
 # tl;dr 
 
 Create a schema, add `@GraQLComponent` to a controller, add `@GraQLQuery` to methods that get data, `@GraQLMutation`
@@ -33,57 +37,6 @@ GraQL is about one step beyond an experiment. There's a reason you'd need to clo
 
 * _well enough for a not-yet-in-production application_
 
-
-## To-Do
-
-1. Pagination (emerging-standards-based!)
-2. Subscriptions
-
-# Philosophy
-
-1. POJOs whenever possible
-2. Make sure you/we can replace internals through named bean replacements
-3. Stay extensible: the code delegation-via-annotation supports overriding to create new annotations at will
-
-# Five-Minute Documentation
-
-Given a normal-old `Controller` with single-or-no argument methods that'd delegate to a service, mark it up with
-`@GraQL...` annotations. When GraphQL wants to do its nasty N+1 bits to crawl the graph, use `@GraQLBatchFetch` to
-keep your DBA from hunting for you:
-
-```
-@GraQLComponent
-class BookController( val bookService:BookService ) {
-
-    @GraQLQuery
-    fun list(req:ListBooksRequest):ListBooksResponse {
-        return bookService.list( req )
-    }
-    
-    // We'll automatically handle validation failures and return something
-    // intelligent within errors.extensions.
-    @GraQLMutation
-    fun create(@field:Valid req:CreateBookRequest):CreateBookResponse {
-        return bookService.create( req )
-    }
-    
-    // N+1 helper for when people fetch book.author across 50 books! We'll autodetect if this this becomes
-    // a list or mapped batch fetch based on your method signature, and conventionally create a named
-    // "authorDataLoader" you can use anywhere else.
-    @GraQLBatchFetch 
-    fun author( books:Collection<Book> ): List<Author> {
-        
-        return authorsById = bookService.findAuthorsByIdIn( books.map{ it.authorId } )
-    }
-}
-```
-That's it. On startup, GraQL will scan for all `GraQLComponent` and do its thing. Because it leverages [Micronaut
-GraphQL Integration](https://micronaut-projects.github.io/micronaut-graphql/4.4.0/guide/), all of the existing 
-configuration it provides (like `/graphql` and `/graphiql`) is as normal!
-
-# Actual Documentation
-
-That's tomorrow. We'd told some folks we'd start to get things out this week.
 
 # License
 

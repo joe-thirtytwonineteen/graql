@@ -15,7 +15,6 @@ import java.util.logging.Logger
 
 @GraQLComponent
 class ToDoGraQLController(
-    private val graQL: GraQL,
     private val toDoService: ToDoService,
 ) {
 
