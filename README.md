@@ -9,7 +9,7 @@ Take a stab at bringing the easy configuration of Spring GraphQL and Netflix DGS
 
 # Documentation
 
-
+Available via [GitHub Pages](https://joe-thirtytwonineteen.github.io/graql/).
 
 # tl;dr 
 
