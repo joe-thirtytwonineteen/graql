@@ -15,4 +15,4 @@ out/
 .micronaut
 node_modules
 **/.vitepress/cache**
-**docs/.vitepress**
+**/.vitepress/dist**
