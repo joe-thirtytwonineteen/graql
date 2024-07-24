@@ -13,3 +13,6 @@ out/
 .factorypath
 .gradle
 .micronaut
+node_modules
+**/.vitepress/cache**
+**docs/.vitepress**

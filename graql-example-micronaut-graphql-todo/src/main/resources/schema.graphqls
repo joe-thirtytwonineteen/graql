@@ -1,7 +1,7 @@
 scalar DateTime
 
 type Query {
-    toDos: [ToDo!]! # <1>
+    toDos: [ToDo!]!
 }
 type Mutation {
     createToDo(input: CreateToDoRequest!): CreateToDoResponse  # <2>
