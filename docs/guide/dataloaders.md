@@ -23,8 +23,8 @@ it's very easy to write code that will list all books and them perform `N` addit
 (one for each book) to "fetch" the author.
 
 GraQL tackles this up-front, allowing you to designate any method within a `@GraQLComponent`
-as a "batch fetch." `graphql-java` recognizes this pattern and will call your batch-fetch 
-method once, providing the keys for all child models to load.
+as a "batch fetch." The underlying `graphql-java` library recognizes this pattern and 
+will call your batch-fetch method once (per batch), providing the keys for all child models to load.
 
 ## Example
 

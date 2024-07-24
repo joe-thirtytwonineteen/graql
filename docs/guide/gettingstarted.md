@@ -39,8 +39,11 @@ implementation("io.micronaut.graphql:micronaut-graphql")
 
 ## Create A Schema
 
-Following GraphQL best practices, GraQL encourages _schema-first_ design of your API. Create
-a schema file in `src/main/resources/schema.graphqls`. The following example builds on the micronaut
+Following GraphQL best practices, GraQL encourages _schema-first_ design of your API. 
+
+Create a schema file in `src/main/resources/schema.graphqls`. 
+
+The following example builds on the micronaut
 to-do guide, adding:
 
 1. GraQL's built in support for a DateTime scalar 
@@ -101,10 +104,12 @@ type Author { # <5>
 
 ## Implement Your API
 
-With a schema in place, it's time to implement your API! Aligning with GraphQL best practices, we recommend
+With a schema in place, it's time to implement your API! 
+
+Aligning with GraphQL best practices, we recommend
 designing, building, and implementing a service tier _separate from any GraphQL concerns_. 
 
-In other words, you should build your services and domain models without depending on GraphQL or GraQL
+In other words: you should build your services and domain models without depending on GraphQL or GraQL
 and treat them both as a controller/endpoint layer.
 
 With services and models written, GraQL allows you to add a controller-tier component that accepts

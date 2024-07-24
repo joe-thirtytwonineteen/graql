@@ -15,8 +15,8 @@ next:
 
 In line with Netflix DGS and Spring GraphQL, GraQL does *not* provide a security framework.
 
-Authentication (identity) and authorization (can an identity perform an operation) should be handled
-within your endpoint (`/graphql`) and business (service) tier, respectively.
+Authentication and authorization should be handled within your endpoint (`/graphql`) and 
+business (service) tiers.
 
 In simpler terms, you secure the `/graphql` route as you would any other, and your `@GraQLComponents`
 should delegate to services that perform authorization.

@@ -21,13 +21,13 @@ performance issue at runtime.
 
 ## How Does GraQL Help?
 
-[graphql-java provides an interface](https://www.graphql-java.com/documentation/execution/#query-caching)
+[Graphql-java provides an interface](https://www.graphql-java.com/documentation/execution/#query-caching)
 that can be implemented to provide a cache of statements. [Netflix DGS provides an example solution](https://netflix.github.io/dgs/advanced/operation-caching/)
 for a [Caffeine](https://github.com/ben-manes/caffeine)-based cache.
 
 GraQL goes one step further, providing a simple implementation and automatically enabling it. 
 
-In other words, you don't need to do anything. It's on by default.
+In other words, you don't need to do anything: it's on by default.
 
 ## Configuring the Cache
 

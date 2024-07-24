@@ -26,6 +26,6 @@ features:
   - title: Kind
     details: GraQL doesn't hide exceptions from logs and relies on your existing micronaut features, like input validation. 
   - title: Humble
-    details: Almost any piece can be replaced via micronaut dependency injection.
+    details: Almost any behavior can be replaced via micronaut dependency injection.
 ---
 

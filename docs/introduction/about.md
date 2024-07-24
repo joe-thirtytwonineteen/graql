@@ -18,7 +18,7 @@ contribution and documentation as well as a platform to explore Kotlin and micro
 GraQL should:
 
 1. Not replace or require changes to existing, well-designed service-tier business logic (i.e., it's just a controller)
-2. **Be humble**. any of its internals should be replaceable through micronaut dependency injection. 
+2. **Be humble**. Any of its internals should be replaceable through micronaut dependency injection. 
 3. **Help developers self-care**. It should not mask exceptions or make debugging harder!
 
 

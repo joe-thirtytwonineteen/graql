@@ -13,8 +13,10 @@ next:
 
 # Input Validation
 
-GraQL doesn't reinvent wheels! Standard micronaut validation annotations are supported via
-a preconfigured custom handler.
+Input validation is turned on by default and "just works" via
+the provided `GraQLValidationExceptionHandler` that listens for `ConstraintViolationException`s.
+
+There's nothing you need to do!
 
 ## Example
 
@@ -28,7 +30,7 @@ data class ToDoDTO(
 )
 ```
 
-Passing an invalid ToDo will invoke the `GraQLValidationExceptionHandler`, resulting in validation
+Passing an invalid `ToDo` will invoke the `GraQLValidationExceptionHandler`, resulting in validation
 failures being passed along as part of the GraphQL `errors` response:
 
 ![validation-errors](../assets/images/validation-errors.png)
