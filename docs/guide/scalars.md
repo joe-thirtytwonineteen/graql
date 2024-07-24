@@ -16,10 +16,10 @@ next:
 
 ## What Are Scalars?
 
-Scalars are the lowest-level types in a GraphQL schema. You're likely already familiar with a few:
+Scalars are the lowest-level types in a GraphQL schema. You're probably familiar with a few:
 `Boolean`, `String`, `Int`, etc.
 
-To build a robust API, you'll likely need to define more, such as `Date` or `EmailAddress`.
+To build a robust API, you'll need to define more, such as `Date` or `EmailAddress`.
 
 [graphql-java](https://www.graphql-java.com/documentation/scalars/) provides great
 [documentation and an interface](https://www.graphql-java.com/documentation/scalars/) for doing this.

@@ -16,10 +16,10 @@ GraphQL APIs.
 
 ## The Problem: GraphQLFactory
 
-Leaping straight from the stock [micronaut®](https://micronaut.io/)'s GraphQL dependency to writing code
+Leaping straight from [micronaut®](https://micronaut.io/)'s GraphQL dependency to writing code
 leaves your team maintaining a GraphQL "factory" bean. 
 
-All contributors will need to register every query, mutation, and fetch with a growing pile of boilerplate:
+All contributors must register every query, mutation, and fetch with a growing pile of boilerplate code:
 
 ```kotlin
 RuntimeWiring runtimeWiring = RuntimeWiring.newRuntimeWiring()

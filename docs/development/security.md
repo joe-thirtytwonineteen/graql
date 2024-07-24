@@ -30,7 +30,7 @@ context propagation.
 Within the following batched data loader, multiple batches of authors may be fetched. This is asynchronous
 and *may cross threads*. 
 
-This means that any authorization (i.e. "current user") bound to a thread might be lost.
+This means that any authorization (i.e., "current user") bound to a thread might be lost.
 
 ```kotlin
 @GraQLBatchFetch

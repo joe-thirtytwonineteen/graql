@@ -128,9 +128,9 @@ When the default `DefaultGraQLQueryConfigurator` creates an instance `DefaultGra
 it's providing an implementation of `graphql-java`'s [`graphql.schema.DataFetcher`](https://javadoc.io/doc/com.graphql-java/graphql-java/latest/graphql/schema/DataFetcher.html)
 that has a reference to your target micronaut component/annotated method with the intent of:
 
-1. Mapping any request parameters
-2. Invoking your target method
-3. Handling any exceptions
+1. Mapping any request parameters.
+2. Invoking your target method.
+3. Handling any exceptions.
 
 Its abbreviated source code is annotated below to explain its workings:
 

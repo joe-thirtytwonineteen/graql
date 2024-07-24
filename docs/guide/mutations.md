@@ -39,8 +39,8 @@ fun createToDo(input: CreateToDoRequest): CreateToDoResponse {
 
 GraQL assumes the following sensible defaults:
 
-1. Your method name (`createToDo`) is the same as your mutation name
-2. Your method should require a single input and its name (within your schema) is `input`
+1. Your method name (`createToDo`) is the same as your mutation name.
+2. Your method should require a single input and its name (within your schema) is `input`.
 
 
 ## Customization

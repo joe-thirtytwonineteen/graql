@@ -13,9 +13,6 @@ next:
 
 # Getting Started
 
-In this guide we'll walk from "empty directory" to "running application with a GraphQL browser
-and the solution for a few real-world hurdles."
-
 ## Installation
 
 GraQL is not yet available via a Gradle/Maven dependency (see above: it's prerelease and experimental!).
@@ -117,7 +114,7 @@ inbound GraphQL requests, handling any GraphQL-specific concerns before delegati
 
 ```kotlin
 @GraQLComponent
-class BookController(
+class BookController(   
     private val bookService: BookService,
     private val authorService: BookService,
 ) {

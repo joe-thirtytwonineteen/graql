@@ -39,7 +39,7 @@ fun toDos(): Collection<ToDo> {
 
 GraQL assumes the following sensible defaults:
 
-1. Your method name (`toDos`) is the same as your query name
+1. Your method name (`toDos`) is the same as your query name.
 2. If your method requires input, it will be a single argument named the same as your method parameter.
 
 

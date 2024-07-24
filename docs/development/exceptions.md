@@ -44,7 +44,7 @@ fun handleValidationException(ex: MyCustomException, builder: GraphqlErrorBuilde
 
 ## Further Reading
 
-The [Netflix DGS team has published guidelines for how they handle exceptions](https://netflix.github.io/dgs/error-handling/).
+The [Netflix DGS team has published guidelines for how to handle exceptions](https://netflix.github.io/dgs/error-handling/).
 
-We think they're a good idea, and GraQL's [validation integration](./validation) uses their guidelines.
+We think they're a good idea, and GraQL's [validation integration](./validation) follows these guidelines.
 

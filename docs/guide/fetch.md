@@ -60,8 +60,8 @@ fun author(toDo: ToDo): Author {
 
 GraQL assumes the following sensible defaults:
 
-1. Your method name (`author`) is the same as the field to fetch
-4. The GraphQL `type` is the same name as the type of the single argument passed to the method
+1. Your method name (`author`) is the same as the field to fetch.
+4. The GraphQL `type` is the same name as the type of the single argument passed to the method.
 
 
 ## Customization

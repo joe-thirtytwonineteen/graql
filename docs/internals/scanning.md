@@ -14,9 +14,9 @@ GraQL does add slight overhead to the startup of your micronaut application. At 
 
 
 1. Uses the underlying micronaut application context to inspect any registered beans of stereotypes `GraQLComponent` and `GraQLScalar`. 
-2. Creates delegates for data fetches (queries, mutations, fetches), data loaders, and exception handlers
-3. Registers scalars
-4. Uses `GraQLFactory` to create the underlying `graphql.GraphQL` for micronaut GraphQL integration
+2. Creates delegates for data fetches (queries, mutations, fetches), data loaders, and exception handlers.
+3. Registers scalars.
+4. Uses `GraQLFactory` to create the underlying `graphql.GraphQL` for micronaut GraphQL integration.
 
 ## GraQLComponent Registration
 
@@ -39,7 +39,7 @@ of delegation behavior](./delegates).
 
 Components annotated with `GraQLExceptionHandler` are registered and provided to the `GraQLGlobalExceptionHandler`.
 
-If a GraphQL operation throws an exception, the globel exception handlers checks for an appropriate delegate. 
+If a GraphQL operation throws an exception, the global exception handler checks for an appropriate delegate. 
 
 If one exists for the exception type, it's then invoked.
 

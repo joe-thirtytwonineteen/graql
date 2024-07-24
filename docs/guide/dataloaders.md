@@ -18,7 +18,7 @@ next:
 > Efficient data loaders are essential and GraQL favors starting with loaders and batch
 > fetches over raw fetch implementations that can cause N+1 issues.
  
-For a schema listing items, where each item has a "child" (e.g. Books have-one Author),
+For a schema listing items, where each item has a "child" (e.g., Books have-one Author),
 it's very easy to write code that will list all books and them perform `N` additional queries
 (one for each book) to "fetch" the author.
 
@@ -96,11 +96,11 @@ fun author( toDos:Collection<ToDo> ): Map<ToDo, Author> {
 
 GraQL assumes the following sensible defaults:
 
-1. Your method name (`author`) is the same as the field to fetch
-2. The response type from your method (`List` or `Map`) determines if this is a batch fetch or mapped batch fetch
+1. Your method name (`author`) is the same as the field to fetch.
+2. The response type from your method (`List` or `Map`) determines if this is a batch fetch or mapped batch fetch.
 3. The underlying data loader name will be the concatenation of your method name and "DataLoader"
-   (e.g. "authorDataLoader")
-4. The GraphQL `type` is the same name as the type generic for the collection passed to the method
+   (e.g. "authorDataLoader").
+4. The GraphQL `type` is the same name as the type generic for the collection passed to the method.
 
 
 ## Customization
